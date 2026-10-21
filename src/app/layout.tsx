@@ -1,0 +1,19 @@
+import type { Metadata, Viewport } from 'next'
+import './globals.css'
+
+export const metadata: Metadata = {
+  title: { default: 'LOIS Knowledge Layer', template: '%s · LOIS' },
+  description:
+    'LOIS prepares and recommends; a person decides. A help assistant, a knowledge base and a reviewed knowledge bank, with a versioned API for every tool you already use.',
+  robots: { index: false, follow: false },
+}
+
+export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: '#0b1f3a' }
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  )
+}
