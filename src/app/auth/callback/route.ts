@@ -19,5 +19,10 @@ export async function GET(req: NextRequest) {
   if (code) failed = Boolean((await sb.auth.exchangeCodeForSession(code)).error)
   else if (tokenHash && type) failed = Boolean((await sb.auth.verifyOtp({ token_hash: tokenHash, type })).error)
 
-  return NextResponse.redirect(failed ? `${origin}/login?error=1` : `${origin}${next}`)
+  if (failed) {
+    // Pass Supabase's own reason (for example a Google secret that cannot be exchanged) to the login screen.
+    const why = searchParams.get('error_description') ?? searchParams.get('error_code') ?? ''
+    return NextResponse.redirect(`${origin}/login?error=1${why ? `&why=${encodeURIComponent(why.slice(0, 160))}` : ''}`)
+  }
+  return NextResponse.redirect(`${origin}${next}`)
 }

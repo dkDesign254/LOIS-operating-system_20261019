@@ -23,7 +23,7 @@ function Form() {
   const [code, setCode] = useState('')
   const [codeSent, setCodeSent] = useState(false)
   const [busy, setBusy] = useState(false)
-  const [error, setError] = useState<string | null>(params.get('error') ? 'That link did not work or has expired. Request a new one.' : null)
+  const [error, setError] = useState<string | null>(params.get('error') ? friendlyAuthError(params.get('why') ?? '') === 'Something went wrong. Please try again.' ? `That link or sign-in did not work${params.get('why') ? ` (${params.get('why')})` : ''}. Request a new one or try another method.` : friendlyAuthError(params.get('why') ?? '') : null)
   const [note, setNote] = useState<string | null>(null)
 
   const cleanEmail = () => email.trim().toLowerCase()
