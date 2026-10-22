@@ -28,6 +28,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         { href: '/app/integrations', label: 'Integrations', icon: 'plug' },
         { href: '/app/team', label: 'Team', icon: 'users' },
         { href: '/app/profile', label: 'Profile', icon: 'user' },
+        { href: '/app/privacy', label: 'Privacy & my data', icon: 'lock' },
       ]
     : []
 

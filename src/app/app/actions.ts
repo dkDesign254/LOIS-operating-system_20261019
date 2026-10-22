@@ -11,6 +11,7 @@ import { indexEmbeddings } from '@/lib/embed'
 import { neonLog } from '@/lib/neon'
 import { dispatch } from '@/lib/webhooks'
 import { supabaseServer } from '@/lib/supabase/server'
+import { POLICY_VERSION } from '@/lib/policy'
 
 const str = (fd: FormData, k: string, max = 4000) => String(fd.get(k) ?? '').trim().slice(0, max)
 const LABELS = ['verified', 'reported', 'example']
@@ -423,4 +424,37 @@ export async function sandboxRun(_: SandboxResult, fd: FormData): Promise<Sandbo
   } catch (e) {
     return { error: e instanceof Error ? e.message : 'Search failed.' }
   }
+}
+
+/* ---------- privileges and privacy ---------- */
+
+export async function setGrant(fd: FormData) {
+  const ctx = await requireWorkspace()
+  const effect = str(fd, 'effect', 8)
+  const exp = str(fd, 'expires', 10)
+  await ctx.sb.rpc('lois_set_grant', {
+    p_tenant: ctx.ws.tenant_id,
+    p_user: str(fd, 'user', 64),
+    p_perm: str(fd, 'perm', 40),
+    p_effect: ['allow', 'deny', 'clear'].includes(effect) ? effect : 'clear',
+    p_expires: /^\d{4}-\d{2}-\d{2}$/.test(exp) ? `${exp}T23:59:59Z` : null,
+    p_reason: str(fd, 'reason', 300) || null,
+  })
+  revalidatePath('/app/team')
+}
+
+export async function requestData(_: FormState, fd: FormData): Promise<FormState> {
+  const ctx = await getCtx()
+  const kind = str(fd, 'kind', 10)
+  if (!['export', 'delete', 'correct', 'restrict'].includes(kind)) return { error: 'Choose a request type.' }
+  const { error } = await ctx.sb.from('lois_data_requests').insert({ kind, note: str(fd, 'note', 1000) || null, user_email: ctx.user.email })
+  if (error) return { error: 'We could not record your request. Please try again.' }
+  revalidatePath('/app/privacy')
+  return { ok: true, message: 'Request received. We respond within 30 days. You can follow its status below.' }
+}
+
+export async function withdrawUpdates() {
+  const ctx = await getCtx()
+  await ctx.sb.from('lois_consents').insert({ purpose: 'product_updates', policy_version: POLICY_VERSION, granted: false, source: 'app' })
+  revalidatePath('/app/privacy')
 }

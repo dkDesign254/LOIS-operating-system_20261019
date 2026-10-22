@@ -54,3 +54,14 @@ test('freshness uses the 30 day rule and unresolved counts open challenge points
   assert.equal(ok[3].status, 'warn')
   assert.equal(ok[4].status, 'warn')
 })
+
+import { validAnswers, recommend, friendlyAuthError } from '../src/lib/policy.ts'
+test('assessment validates answers and recommends a start page', () => {
+  assert.equal(validAnswers({ intent: 'decisions', audience: 'myself', org_type: 'startup' }), true)
+  assert.equal(validAnswers({ intent: 'hack', audience: 'myself', org_type: 'startup' }), false)
+  assert.equal(recommend({ intent: 'automation', audience: 'my_team', org_type: 'other' }).path, '/app/integrations')
+})
+test('auth errors become actionable messages', () => {
+  assert.match(friendlyAuthError('Error sending confirmation email'), /could not send the email/)
+  assert.match(friendlyAuthError('Invalid login credentials'), /do not match/)
+})

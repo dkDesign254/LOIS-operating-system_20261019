@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Icon, type IconName } from '@/components/icons'
+import { LandingAssess } from '@/components/landing-assess'
 
 const features: { icon: IconName; title: string; text: string }[] = [
   { icon: 'chat', title: 'Help that cites its sources', text: 'Ask in plain language. Answers come only from approved knowledge, with the evidence label shown. No match means no guess.' },
@@ -30,13 +31,18 @@ export default function Home() {
           A help assistant backed by a knowledge base you control and a knowledge bank that only learns from what a person has verified.
         </p>
         <div className="row" style={{ justifyContent: 'center' }}>
-          <Link className="btn gold" href="/login">
-            Open your workspace
+          <Link className="btn gold" href="/login?mode=signup">
+            Get started free
           </Link>
           <a className="btn ghost" href="/api/v1/openapi.json">
             API reference
           </a>
         </div>
+      </section>
+
+      <section className="section">
+        <h2 style={{ textAlign: 'center' }}>Find your starting point in three questions</h2>
+        <LandingAssess />
       </section>
 
       <section className="section">
@@ -63,7 +69,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="foot">The Lucrebag · LOIS Knowledge Layer · Free tier workspaces include 50 questions a day.</footer>
+      <footer className="foot">The Lucrebag · LOIS Knowledge Layer · Free tier workspaces include 50 questions a day. <a href="/privacy">Privacy</a></footer>
     </>
   )
 }

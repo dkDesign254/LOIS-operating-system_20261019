@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import type { SupabaseClient, User } from '@supabase/supabase-js'
 import { supabaseServer } from '@/lib/supabase/server'
+import { POLICY_VERSION } from '@/lib/policy'
 
 export type Workspace = {
   tenant_id: string
@@ -20,6 +21,8 @@ export type Ctx = {
   ws: Workspace | null
   isReviewer: boolean
   isAdmin: boolean
+  perms: string[]
+  can: (permission: string) => boolean
 }
 
 export const TENANT_COOKIE = 'lois_tenant'
@@ -42,6 +45,10 @@ export const getCtx = cache(async (): Promise<Ctx> => {
   } = await sb.auth.getUser()
   if (!user) redirect('/login')
 
+  // Everyone gives informed consent and answers the short assessment once (again if the policy version changes).
+  const { data: onb } = await sb.from('lois_onboarding').select('policy_version').eq('user_id', user.id).maybeSingle()
+  if (!onb || onb.policy_version !== POLICY_VERSION) redirect('/start')
+
   let workspaces = await loadWorkspaces(sb, user.id)
   if (!workspaces.length) {
     // Accepts pending invitations / allow-listed admin access for this verified email.
@@ -51,13 +58,20 @@ export const getCtx = cache(async (): Promise<Ctx> => {
   const wanted = (await cookies()).get(TENANT_COOKIE)?.value
   const ws = workspaces.find((w) => w.tenant_id === wanted) ?? workspaces[0] ?? null
   const role = ws?.role ?? ''
+  let perms: string[] = []
+  if (ws) {
+    const { data } = await sb.rpc('lois_my_permissions', { p_tenant: ws.tenant_id })
+    perms = (data as string[] | null) ?? []
+  }
   return {
     sb,
     user,
     workspaces,
     ws,
-    isReviewer: ['owner', 'admin', 'reviewer'].includes(role),
-    isAdmin: ['owner', 'admin'].includes(role),
+    isReviewer: perms.length ? perms.includes('bank.review') : ['owner', 'admin', 'reviewer'].includes(role),
+    isAdmin: perms.length ? perms.includes('team.manage') : ['owner', 'admin'].includes(role),
+    perms,
+    can: (permission: string) => perms.includes(permission),
   }
 })
 
