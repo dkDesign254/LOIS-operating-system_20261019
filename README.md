@@ -49,7 +49,7 @@ npm run dev
 
 ## Database
 
-Supabase project `axgrvhfwfyasiafibuye`. Migrations KB-001 to KB-009 are recorded in `lois_migration_registry`; KB-008/009 are in `supabase/migrations/`. Run `supabase db pull` to copy the earlier ones into the repo.
+Supabase project `axgrvhfwfyasiafibuye`. Migrations KB-001 to KB-010 are recorded in `lois_migration_registry`; KB-008/009/010 and the `embed` function are in `supabase/migrations/`. Run `supabase db pull` to copy the earlier ones into the repo.
 
 ## Verified
 
@@ -57,6 +57,6 @@ An end-to-end test ran against the live database as real roles inside a rolled-b
 
 ## Not done yet
 
-- Embedding-based (semantic) search: the vector column exists; an Edge Function using Supabase's built-in `gte-small` model is the next step.
-- Automated tests in CI (CI currently typechecks and builds).
+- Semantic search is built (hybrid full-text + gte-small embeddings via the `embed` Edge Function, migration KB-010). The 0.78 similarity floor in `lois_private.semantic_core` is untuned: adjust it once you have real content.
+- More tests: CI runs typecheck, unit tests (`npm test`) and build; database behaviour is verified by the rolled-back end-to-end SQL test, not yet in CI.
 - Rate limiting beyond the per-workspace daily quotas.

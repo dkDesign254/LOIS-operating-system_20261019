@@ -7,6 +7,7 @@ import { getCtx, requireWorkspace, TENANT_COOKIE } from '@/lib/session'
 import { answer, retrieve, citationsOf } from '@/lib/ask'
 import { chunkText } from '@/lib/chunk'
 import { newApiKey, newSecret, sha256 } from '@/lib/hash'
+import { indexEmbeddings } from '@/lib/embed'
 import { neonLog } from '@/lib/neon'
 import { dispatch } from '@/lib/webhooks'
 import { supabaseServer } from '@/lib/supabase/server'
@@ -185,10 +186,17 @@ export async function addDocument(_: FormState, fd: FormData): Promise<FormState
     const { error: cErr } = await ctx.sb.from('lois_document_chunks').insert(rows.slice(i, i + 100))
     if (cErr) return { error: `Saved, but indexing failed: ${cErr.message}` }
   }
+  await indexEmbeddings(ctx.sb, ctx.ws.tenant_id)
   await neonLog('document', { tenant_id: ctx.ws.tenant_id, actor: ctx.user.id, results: rows.length, ref: doc.document_id })
   await dispatch(ctx.sb, ctx.ws.tenant_id, 'document.added', { document_id: doc.document_id, title, passages: rows.length })
   revalidatePath('/app/knowledge')
   return { ok: true, message: `Added and indexed ${rows.length} passage${rows.length === 1 ? '' : 's'}.` }
+}
+
+export async function reindexAction() {
+  const ctx = await requireWorkspace()
+  const n = await indexEmbeddings(ctx.sb, ctx.ws.tenant_id, 6)
+  redirect(`/app/knowledge?indexed=${n}`)
 }
 
 export async function archiveDocument(fd: FormData) {
@@ -234,6 +242,7 @@ export async function reviewKnowledge(fd: FormData) {
   const id = str(fd, 'id', 64)
   const { error } = await ctx.sb.from('lois_knowledge_items').update({ status: decision }).eq('knowledge_id', id).eq('status', 'pending_review')
   if (!error) {
+    if (decision === 'approved') await indexEmbeddings(ctx.sb, ctx.ws.tenant_id, 1)
     await neonLog('bank.' + decision, { tenant_id: ctx.ws.tenant_id, actor: ctx.user.id, ref: id })
     await dispatch(ctx.sb, ctx.ws.tenant_id, decision === 'approved' ? 'knowledge.approved' : 'knowledge.rejected', { knowledge_id: id })
   }

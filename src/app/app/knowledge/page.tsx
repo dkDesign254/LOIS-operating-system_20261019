@@ -1,11 +1,12 @@
 import { requireWorkspace } from '@/lib/session'
 import { ActionForm } from '@/components/forms'
 import { Icon } from '@/components/icons'
-import { addDocument, archiveDocument } from '../actions'
+import { addDocument, archiveDocument, reindexAction } from '../actions'
 
 export const metadata = { title: 'Knowledge base' }
 
-export default async function Knowledge() {
+export default async function Knowledge({ searchParams }: { searchParams: Promise<{ indexed?: string }> }) {
+  const sp = await searchParams
   const ctx = await requireWorkspace()
   const canAdd = ['owner', 'admin', 'reviewer', 'member'].includes(ctx.ws.role)
   const [{ data: docs }, { data: projects }] = await Promise.all([
@@ -26,6 +27,12 @@ export default async function Knowledge() {
         <p className="muted">
           Your working documents. They are indexed for search the moment you add them. Label how much you trust each one: <b>verified</b> (checked by a person), <b>reported</b> (from a source, not checked), or <b>example</b> (illustrative). To make something authoritative, put it through the <a href="/app/bank">knowledge bank</a>.
         </p>
+        {canAdd && (
+          <form action={reindexAction} style={{ marginTop: 8 }}>
+            <button className="btn" type="submit">Refresh semantic index</button>
+            {sp.indexed !== undefined && <span className="muted"> Indexed {Number(sp.indexed) || 0} new passage(s).</span>}
+          </form>
+        )}
       </div>
 
       {canAdd ? (

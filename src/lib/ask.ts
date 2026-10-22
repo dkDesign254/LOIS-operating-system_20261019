@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { embedTexts, toVector } from './embed'
 
 export type Label = 'verified' | 'reported' | 'example'
 
@@ -30,6 +31,12 @@ const clean = (s: string) => s.replace(/<\/?b>/g, '').replace(/\s+/g, ' ').trim(
 const LABEL_WEIGHT: Record<Label, number> = { verified: 1, reported: 0.8, example: 0.55 }
 
 export async function retrieve(sb: SupabaseClient, tenant: string, query: string, limit = 6): Promise<Hit[]> {
+  // Hybrid (full-text + semantic) when the embed function answers; plain full-text otherwise.
+  const vec = await embedTexts(sb, [query.slice(0, 1000)])
+  if (vec?.[0]) {
+    const { data, error } = await sb.rpc('lois_search_hybrid', { p_tenant: tenant, p_query: query, p_embedding: toVector(vec[0]), p_limit: limit })
+    if (!error) return (data ?? []) as Hit[]
+  }
   const { data, error } = await sb.rpc('lois_search', { p_tenant: tenant, p_query: query, p_limit: limit })
   if (error) throw new Error(error.message)
   return (data ?? []) as Hit[]
