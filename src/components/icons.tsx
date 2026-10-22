@@ -21,6 +21,12 @@ const paths: Record<string, ReactNode> = {
   send: <path d="M4 12 20 4l-4 16-4-6-8-2Z" />,
   spark: <path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18" />,
   db: <><ellipse cx="12" cy="6" rx="7" ry="3" /><path d="M5 6v6c0 1.7 3 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3 3 7 3s7-1.3 7-3v-6" /></>,
+  home: <path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z" />,
+  gov: <><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z" /></>,
+  note: <><path d="M5 3h11l3 3v15H5z" /><path d="M8 9h8M8 13h8M8 17h5" /></>,
+  grid: <path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" />,
+  flow: <path d="M5 5h5v4H5zM14 15h5v4h-5zM10 7h4a3 3 0 013 3v5" />,
+  archive: <><path d="M3 5h18v4H3zM5 9v10h14V9M10 13h4" /></>,
   lock: <><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></>,
 }
 

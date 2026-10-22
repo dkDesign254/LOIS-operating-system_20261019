@@ -11,12 +11,19 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const items: NavItem[] = ctx.ws
     ? [
+        { href: '/app/control', label: 'Start here', icon: 'home' },
         { href: '/app', label: 'Ask LOIS', icon: 'chat' },
+        { href: '/app/decisions', label: 'Decisions', icon: 'gov' },
+        { href: '/app/memory', label: 'Memory', icon: 'note' },
+        { href: '/app/arms', label: 'Business arms', icon: 'grid' },
+        { href: '/app/automations', label: 'Automations', icon: 'flow' },
+        { href: '/app/continuity', label: 'Data & backups', icon: 'archive' },
         { href: '/app/knowledge', label: 'Knowledge base', icon: 'book' },
         { href: '/app/bank', label: 'Knowledge bank', icon: 'shield' },
         { href: '/app/help', label: 'Get help', icon: 'lifebuoy' },
         { href: '/app/projects', label: 'Projects', icon: 'folder' },
         { href: '/app/sandbox', label: 'Sandbox', icon: 'flask' },
+        { href: '/app/learn', label: 'Learn LOIS', icon: 'learn' },
         { href: '/app/rewards', label: 'Rewards', icon: 'trophy' },
         { href: '/app/integrations', label: 'Integrations', icon: 'plug' },
         { href: '/app/team', label: 'Team', icon: 'users' },

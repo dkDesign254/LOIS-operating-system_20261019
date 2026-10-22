@@ -16,6 +16,7 @@ Owner: Dustine Kibagendi, The Lucrebag.
 | **Get help** | One click sends a question to a person. Their answer can be promoted to the bank, so the next person gets it instantly (the relearning loop). |
 | **Sandbox** | Dry-run a scenario and see the decision brief. Reads only; `execution: NO`. |
 | **Projects, Rewards, Profile** | Group work by engagement; points and a weekly challenge; tone and answer-length preferences. |
+| **Control Centre** | Start here, Decisions (briefs, evidence requests, versioned records, audit log), Memory, Business arms, Automations, Data & backups, Learn LOIS, seven Sandbox tools. See [docs/CONTROL-CENTRE.md](docs/CONTROL-CENTRE.md). |
 | **Integrations** | API keys (hashed), signed webhooks, n8n and Make recipes, optional Neon analytics. |
 | **Team** | Invite by email with roles: owner, admin, reviewer, member, viewer. |
 
@@ -49,7 +50,7 @@ npm run dev
 
 ## Database
 
-Supabase project `axgrvhfwfyasiafibuye`. Migrations KB-001 to KB-010 are recorded in `lois_migration_registry`; KB-008/009/010 and the `embed` function are in `supabase/migrations/`. Run `supabase db pull` to copy the earlier ones into the repo.
+Supabase project `axgrvhfwfyasiafibuye`. Migrations KB-001 to KB-011 are recorded in `lois_migration_registry`; KB-008 to KB-011 and the `embed` function are in `supabase/migrations/`. Run `supabase db pull` to copy the earlier ones into the repo.
 
 ## Verified
 
