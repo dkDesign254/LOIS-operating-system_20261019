@@ -3,6 +3,15 @@ import { createServerClient } from '@supabase/ssr'
 
 // Refreshes the Supabase session cookie and keeps /app behind sign-in.
 export async function middleware(req: NextRequest) {
+  // If Supabase falls back to the Site URL (redirect URL not on its allow-list), the sign-in code arrives at the
+  // homepage or /login. Hand it to the callback so the person still lands inside the app.
+  const p = req.nextUrl.pathname
+  if ((p === '/' || p === '/login') && req.nextUrl.searchParams.get('code')) {
+    const to = req.nextUrl.clone()
+    to.pathname = '/auth/callback'
+    if (!to.searchParams.get('next')) to.searchParams.set('next', '/app')
+    return NextResponse.redirect(to)
+  }
   let res = NextResponse.next({ request: req })
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
@@ -33,4 +42,4 @@ export async function middleware(req: NextRequest) {
   return res
 }
 
-export const config = { matcher: ['/app/:path*', '/login', '/start'] }
+export const config = { matcher: ['/', '/app/:path*', '/login', '/start'] }
