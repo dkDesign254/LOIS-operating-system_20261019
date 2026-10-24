@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { requireWorkspace } from '@/lib/session'
+import { requireInternal } from '@/lib/session'
 import { llmEnabled } from '@/lib/llm'
 import { readiness, type Challenge } from '@/lib/readiness'
 import { Pill, fmt } from '@/components/ui'
@@ -11,7 +11,7 @@ export const metadata = { title: 'Decision brief' }
 export default async function BriefPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ error?: string; recorded?: string }> }) {
   const { id } = await params
   const sp = await searchParams
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound()
   const { data: b } = await ctx.sb.from('lois_decision_briefs').select('*').eq('brief_id', id).eq('tenant_id', ctx.ws.tenant_id).maybeSingle()
   if (!b) notFound()

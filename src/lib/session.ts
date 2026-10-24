@@ -1,6 +1,6 @@
 import { cache } from 'react'
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { redirect, notFound } from 'next/navigation'
 import type { SupabaseClient, User } from '@supabase/supabase-js'
 import { supabaseServer } from '@/lib/supabase/server'
 import { POLICY_VERSION } from '@/lib/policy'
@@ -21,6 +21,8 @@ export type Ctx = {
   ws: Workspace | null
   isReviewer: boolean
   isAdmin: boolean
+  isInternal: boolean
+  isStaff: boolean
   perms: string[]
   can: (permission: string) => boolean
 }
@@ -59,6 +61,7 @@ export const getCtx = cache(async (): Promise<Ctx> => {
   const ws = workspaces.find((w) => w.tenant_id === wanted) ?? workspaces[0] ?? null
   const role = ws?.role ?? ''
   let perms: string[] = []
+  const { data: staff } = await sb.rpc('lois_is_staff')
   if (ws) {
     const { data } = await sb.rpc('lois_my_permissions', { p_tenant: ws.tenant_id })
     perms = (data as string[] | null) ?? []
@@ -70,6 +73,8 @@ export const getCtx = cache(async (): Promise<Ctx> => {
     ws,
     isReviewer: perms.length ? perms.includes('bank.review') : ['owner', 'admin', 'reviewer'].includes(role),
     isAdmin: perms.length ? perms.includes('team.manage') : ['owner', 'admin'].includes(role),
+    isInternal: ['holding_company', 'business_arm'].includes(ws?.tenant_type ?? ''),
+    isStaff: staff === true,
     perms,
     can: (permission: string) => perms.includes(permission),
   }
@@ -80,4 +85,11 @@ export async function requireWorkspace(): Promise<Ctx & { ws: Workspace }> {
   const ctx = await getCtx()
   if (!ctx.ws) redirect('/app/welcome')
   return ctx as Ctx & { ws: Workspace }
+}
+
+/** Staff-only workspaces (holding company and business arms). Customers get a 404, not a "forbidden", so the surface is not advertised. */
+export async function requireInternal(): Promise<Ctx & { ws: Workspace }> {
+  const ctx = await requireWorkspace()
+  if (!ctx.isInternal) notFound()
+  return ctx
 }

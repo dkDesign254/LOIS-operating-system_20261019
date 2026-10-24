@@ -32,7 +32,7 @@ export async function middleware(req: NextRequest) {
     data: { user },
   } = await sb.auth.getUser()
 
-  if (!user && req.nextUrl.pathname.startsWith('/app')) {
+  if (!user && (req.nextUrl.pathname.startsWith('/app') || req.nextUrl.pathname.startsWith('/internal'))) {
     const to = req.nextUrl.clone()
     to.pathname = '/login'
     to.search = ''
@@ -42,4 +42,4 @@ export async function middleware(req: NextRequest) {
   return res
 }
 
-export const config = { matcher: ['/', '/app/:path*', '/login', '/start'] }
+export const config = { matcher: ['/', '/app/:path*', '/internal/:path*', '/login', '/start'] }

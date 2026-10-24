@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireWorkspace } from '@/lib/session'
+import { requireInternal } from '@/lib/session'
 import { ActionForm } from '@/components/forms'
 import { Guide, Pill, fmt } from '@/components/ui'
 import { addMemory } from '../control-actions'
@@ -9,7 +9,7 @@ const TYPES = ['all', 'fact', 'decision', 'lesson', 'risk', 'idea']
 
 export default async function Memory({ searchParams }: { searchParams: Promise<{ type?: string }> }) {
   const sp = await searchParams
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const type = TYPES.includes(sp.type ?? '') ? sp.type! : 'all'
   let q = ctx.sb.from('lois_memory').select('memory_id, type, text, source, example, created_at').eq('tenant_id', ctx.ws.tenant_id).order('created_at', { ascending: false }).limit(100)
   if (type !== 'all') q = q.eq('type', type)

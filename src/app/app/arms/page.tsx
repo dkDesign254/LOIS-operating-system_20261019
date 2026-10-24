@@ -1,11 +1,11 @@
-import { requireWorkspace } from '@/lib/session'
+import { requireInternal } from '@/lib/session'
 import { Guide, Pill } from '@/components/ui'
 
 export const metadata = { title: 'Business arms' }
 type Kpi = { label: string; value: string; target: string; source: string; action: string }
 
 export default async function Arms() {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const { data: arms } = await ctx.sb.from('lois_arms').select('arm_id, name, blurb, kpis').eq('tenant_id', ctx.ws.tenant_id).order('created_at')
   return (
     <div className="stack">

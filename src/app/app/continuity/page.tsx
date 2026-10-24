@@ -1,10 +1,10 @@
-import { requireWorkspace } from '@/lib/session'
+import { requireInternal } from '@/lib/session'
 import { Guide, Pill, Tile, sevTone } from '@/components/ui'
 
 export const metadata = { title: 'Data & backups' }
 
 export default async function Continuity() {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const { data: rows } = await ctx.sb.from('lois_continuity_items').select('item_id, item, status, severity, source, action').eq('tenant_id', ctx.ws.tenant_id).order('sort')
   const list = rows ?? []
   return (

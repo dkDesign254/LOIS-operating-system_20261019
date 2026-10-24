@@ -11,13 +11,17 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const items: NavItem[] = ctx.ws
     ? [
-        { href: '/app/control', label: 'Start here', icon: 'home' },
+        ...(ctx.isInternal
+          ? ([
+              { href: '/app/control', label: 'Start here', icon: 'home' },
+              { href: '/app/decisions', label: 'Decisions', icon: 'gov' },
+              { href: '/app/memory', label: 'Memory', icon: 'note' },
+              { href: '/app/arms', label: 'Business arms', icon: 'grid' },
+              { href: '/app/automations', label: 'Automations', icon: 'flow' },
+              { href: '/app/continuity', label: 'Data & backups', icon: 'archive' },
+            ] as NavItem[])
+          : []),
         { href: '/app', label: 'Ask LOIS', icon: 'chat' },
-        { href: '/app/decisions', label: 'Decisions', icon: 'gov' },
-        { href: '/app/memory', label: 'Memory', icon: 'note' },
-        { href: '/app/arms', label: 'Business arms', icon: 'grid' },
-        { href: '/app/automations', label: 'Automations', icon: 'flow' },
-        { href: '/app/continuity', label: 'Data & backups', icon: 'archive' },
         { href: '/app/knowledge', label: 'Knowledge base', icon: 'book' },
         { href: '/app/bank', label: 'Knowledge bank', icon: 'shield' },
         { href: '/app/help', label: 'Get help', icon: 'lifebuoy' },
@@ -29,6 +33,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         { href: '/app/team', label: 'Team', icon: 'users' },
         { href: '/app/profile', label: 'Profile', icon: 'user' },
         { href: '/app/privacy', label: 'Privacy & my data', icon: 'lock' },
+        ...(ctx.isStaff ? ([{ href: '/internal', label: 'Staff console', icon: 'shield' }] as NavItem[]) : []),
       ]
     : []
 

@@ -30,6 +30,5 @@ export async function completeOnboarding(_: StartState, fd: FormData): Promise<S
     .upsert({ user_id: user.id, ...a, source, recommended_path: rec.path, policy_version: POLICY_VERSION, completed_at: new Date().toISOString() }, { onConflict: 'user_id' })
   if (error) return { error: 'We could not save your answers. Please try again.' }
 
-  // New people with no workspace are sent to create one by requireWorkspace; the recommended page is remembered in the cookie-free query.
-  redirect(`/app?start=${encodeURIComponent(rec.path)}`)
+  redirect(rec.path)
 }

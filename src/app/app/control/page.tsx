@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireWorkspace } from '@/lib/session'
+import { requireInternal } from '@/lib/session'
 import { ActionForm } from '@/components/forms'
 import { BriefMe } from '@/components/control'
 import { Guide, Pill, Tile, sevTone } from '@/components/ui'
@@ -9,7 +9,7 @@ import { addTask, completeTask } from '../control-actions'
 export const metadata = { title: 'Start here' }
 
 export default async function Control() {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const t = ctx.ws.tenant_id
   const canWrite = ['owner', 'admin', 'reviewer'].includes(ctx.ws.role)
   const [tasks, pending, scen, cont, docs, bank] = await Promise.all([

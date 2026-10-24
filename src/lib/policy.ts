@@ -45,7 +45,7 @@ export function validAnswers(a: Partial<Answers>): a is Answers {
 
 /** Where to send someone first, based only on what they said they want. */
 export function recommend(a: Answers): { path: string; why: string } {
-  if (a.intent === 'decisions') return { path: '/app/decisions', why: 'You want decisions prepared for a person to approve.' }
+  if (a.intent === 'decisions') return { path: '/app/sandbox', why: 'Try a decision as a dry run first. Nothing is saved or executed.' }
   if (a.intent === 'automation') return { path: '/app/integrations', why: 'You want to connect LOIS to your tools.' }
   if (a.intent === 'help_knowledge') return { path: '/app/knowledge', why: 'Start by adding the documents you want answers from.' }
   return { path: '/app/learn', why: 'A short tour is the quickest way to see what LOIS does.' }

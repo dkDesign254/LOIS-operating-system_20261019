@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireWorkspace } from '@/lib/session'
+import { requireInternal } from '@/lib/session'
 import { ActionForm } from '@/components/forms'
 import { Guide, Pill, fmt } from '@/components/ui'
 import { createBrief } from '../control-actions'
@@ -8,7 +8,7 @@ export const metadata = { title: 'Decisions' }
 const TONE = { draft: 'info', pending: 'info', needs_info: 'warn', approved: 'ok', rejected: 'none' } as const
 
 export default async function Decisions() {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const t = ctx.ws.tenant_id
   const canWrite = ['owner', 'admin', 'reviewer', 'member'].includes(ctx.ws.role)
   const [briefs, audit] = await Promise.all([

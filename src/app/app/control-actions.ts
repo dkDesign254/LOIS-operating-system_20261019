@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { requireWorkspace } from '@/lib/session'
+import { requireInternal } from '@/lib/session'
 import { generate, llmEnabled, data, NO_LLM } from '@/lib/llm'
 import { DEMOS } from '@/lib/learn'
 import type { FormState } from './actions'
@@ -18,7 +18,7 @@ const fail = (id: string, msg: string): never => back(id, `?error=${encodeURICom
 
 /* ---------- next actions ---------- */
 export async function addTask(_: FormState, fd: FormData): Promise<FormState> {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const title = str(fd, 'title', 300)
   if (title.length < 3) return { error: 'Describe the action in a few words.' }
   const { error } = await ctx.sb.from('lois_tasks').insert({
@@ -31,7 +31,7 @@ export async function addTask(_: FormState, fd: FormData): Promise<FormState> {
 }
 
 export async function completeTask(fd: FormData) {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const id = str(fd, 'id', 64)
   await ctx.sb.from('lois_tasks').update({ status: 'done', done_at: new Date().toISOString() }).eq('task_id', id)
   await ctx.sb.from('lois_audit').insert({ tenant_id: ctx.ws.tenant_id, actor: ctx.user.id, action: 'Action completed', target: id })
@@ -40,7 +40,7 @@ export async function completeTask(fd: FormData) {
 
 /* ---------- memory ---------- */
 export async function addMemory(_: FormState, fd: FormData): Promise<FormState> {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const text = str(fd, 'text', 600)
   if (text.length < 3) return { error: 'Write one clear sentence first.' }
   const type = pick(str(fd, 'type', 10), ['fact', 'decision', 'lesson', 'risk', 'idea'], 'fact')
@@ -53,7 +53,7 @@ export async function addMemory(_: FormState, fd: FormData): Promise<FormState> 
 
 /* ---------- decisions ---------- */
 export async function createBrief(_: FormState, fd: FormData): Promise<FormState> {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const title = str(fd, 'title', 200)
   const maker = str(fd, 'decision_maker', 80)
   if (title.length < 6 || !maker) return { error: 'Add the decision (a short sentence) and who decides.' }
@@ -76,7 +76,7 @@ export async function createBrief(_: FormState, fd: FormData): Promise<FormState
 }
 
 export async function submitBrief(fd: FormData) {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const id = str(fd, 'id', 64)
   const { data: b } = await ctx.sb.from('lois_decision_briefs').update({ status: 'pending', updated_at: new Date().toISOString() }).eq('brief_id', id).eq('status', 'draft').select('title').maybeSingle()
   if (b) await ctx.sb.from('lois_audit').insert({ tenant_id: ctx.ws.tenant_id, actor: ctx.user.id, action: 'Draft submitted for decision', target: b.title })
@@ -84,7 +84,7 @@ export async function submitBrief(fd: FormData) {
 }
 
 export async function saveEvidence(fd: FormData) {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const id = str(fd, 'id', 64)
   const note = str(fd, 'evidence', 300)
   const { error } = await ctx.sb.from('lois_decision_briefs').update({
@@ -97,7 +97,7 @@ export async function saveEvidence(fd: FormData) {
 }
 
 async function loadBrief(id: string) {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const { data: b } = await ctx.sb.from('lois_decision_briefs').select('*').eq('brief_id', id).maybeSingle()
   if (!b) redirect('/app/decisions')
   return { ctx, b: b as Record<string, unknown> & { title: string; challenge: unknown; brief_text: string | null; version: number } }
@@ -174,7 +174,7 @@ export async function generateHandoff(fd: FormData) {
 }
 
 export async function requestEvidence(fd: FormData) {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const id = str(fd, 'id', 64)
   const owner = str(fd, 'owner', 80)
   const text = str(fd, 'text', 300)
@@ -187,7 +187,7 @@ export async function requestEvidence(fd: FormData) {
 }
 
 export async function recordDecision(fd: FormData) {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const id = str(fd, 'id', 64)
   const { error } = await ctx.sb.rpc('lois_record_decision', {
     p_brief: id, p_decision: str(fd, 'decision', 12), p_reason: str(fd, 'reason', 600),
@@ -198,7 +198,7 @@ export async function recordDecision(fd: FormData) {
 }
 
 export async function saveLearning(fd: FormData) {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const id = str(fd, 'id', 64)
   const { error } = await ctx.sb.rpc('lois_save_learning', { p_brief: id, p_outcome: str(fd, 'outcome', 500) })
   if (error) return fail(id, error.message)
@@ -209,7 +209,7 @@ export async function saveLearning(fd: FormData) {
 export type GenState = { text?: string; error?: string } | null
 
 export async function runDemo(_: GenState, fd: FormData): Promise<GenState> {
-  await requireWorkspace()
+  await requireInternal()
   const demo = DEMOS.find((d) => d.id === str(fd, 'demo', 20))
   const input = str(fd, 'input', 6000)
   if (!demo || !input) return { error: 'Add some text first.' }
@@ -219,7 +219,7 @@ export async function runDemo(_: GenState, fd: FormData): Promise<GenState> {
 }
 
 export async function rateDemo(fd: FormData) {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const demo = DEMOS.find((d) => d.id === str(fd, 'demo', 20))
   if (!demo) return
   const up = str(fd, 'v', 4) === 'up'
@@ -228,7 +228,7 @@ export async function rateDemo(fd: FormData) {
 }
 
 export async function briefMe(_: GenState): Promise<GenState> {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   if (!llmEnabled()) return { error: NO_LLM }
   const t = ctx.ws.tenant_id
   const [tasks, briefs, scen, mem] = await Promise.all([

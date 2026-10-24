@@ -1,11 +1,11 @@
-import { requireWorkspace } from '@/lib/session'
+import { requireInternal } from '@/lib/session'
 import { Guide, Pill, Tile, sevTone } from '@/components/ui'
 
 export const metadata = { title: 'Automations' }
 const LABEL: Record<string, string> = { failing: 'Failing', degraded: 'Degraded', unverified: 'Not verified', healthy: 'Healthy' }
 
 export default async function Automations() {
-  const ctx = await requireWorkspace()
+  const ctx = await requireInternal()
   const { data: rows } = await ctx.sb.from('lois_scenarios').select('scenario_id, make_id, name, folder, is_on, last_run, state, plain, action, source, checked_at').eq('tenant_id', ctx.ws.tenant_id).order('folder').order('name')
   const list = rows ?? []
   const on = list.filter((r) => r.is_on).length
