@@ -65,3 +65,29 @@ test('auth errors become actionable messages', () => {
   assert.match(friendlyAuthError('Error sending confirmation email'), /could not send the email/)
   assert.match(friendlyAuthError('Invalid login credentials'), /do not match/)
 })
+
+import { classifyTask, nextSummary, buildContext, rank } from '../src/lib/models.ts'
+test('tasks are classified by plain rules', () => {
+  assert.equal(classifyTask('Write a warm email to a new client'), 'writing')
+  assert.equal(classifyTask('Fix this SQL query'), 'code')
+  assert.equal(classifyTask('Should we choose a quick fix or a proper fix and why'), 'reasoning')
+  assert.equal(classifyTask('hi'), 'quick')
+  assert.equal(classifyTask('x'.repeat(7000)), 'summarise')
+})
+test('with no keys nothing is routed and the shared summary stays bounded', () => {
+  for (const k of ['ANTHROPIC_API_KEY', 'GOOGLE_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY', 'OPENROUTER_API_KEY']) delete process.env[k]
+  assert.equal(rank('writing').length, 0)
+  let s = ''
+  for (let i = 0; i < 80; i++) s = nextSummary(s, 'question ' + i, 'm', 'answer '.repeat(60))
+  assert.ok(s.length <= 3800)
+  assert.match(s, /question 79/)
+})
+test('with keys the strongest model for the job ranks first and context is shared', () => {
+  process.env.GOOGLE_API_KEY = 'x'
+  process.env.GROQ_API_KEY = 'x'
+  assert.equal(rank('summarise')[0].id, 'google')
+  assert.equal(rank('quick')[0].id, 'groq')
+  const c = buildContext({ summary: 'S', knowledge: 'K', history: [{ role: 'assistant', content: 'earlier', model: 'gemini' }] })
+  assert.match(c, /Session so far/)
+  assert.match(c, /Assistant \(gemini\)/)
+})

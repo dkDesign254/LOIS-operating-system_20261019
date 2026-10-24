@@ -2,12 +2,16 @@ import Link from 'next/link'
 import { getCtx } from '@/lib/session'
 import { Nav, type NavItem } from '@/components/nav'
 import { Icon } from '@/components/icons'
+import { PageGuide } from '@/components/page-guide'
+import { TrialBanner } from '@/components/trial-banner'
+import { getTrial } from '@/lib/trial'
 import { signOut, switchWorkspace } from './actions'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const ctx = await getCtx()
+  const trial = ctx.ws ? await getTrial(ctx.sb, ctx.isInternal) : null
 
   const items: NavItem[] = ctx.ws
     ? [
@@ -77,7 +81,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </form>
         </div>
       </aside>
-      <main className="main">{children}</main>
+      <main className="main">
+        <TrialBanner trial={trial} />
+        <PageGuide />
+        {children}
+      </main>
     </div>
   )
 }

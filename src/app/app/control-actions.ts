@@ -2,7 +2,8 @@
 
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { requireInternal } from '@/lib/session'
+import { requireInternal, requireWorkspace } from '@/lib/session'
+import { enabledProviders, runAuto } from '@/lib/models'
 import { generate, llmEnabled, data, NO_LLM } from '@/lib/llm'
 import { DEMOS } from '@/lib/learn'
 import type { FormState } from './actions'
@@ -209,17 +210,18 @@ export async function saveLearning(fd: FormData) {
 export type GenState = { text?: string; error?: string } | null
 
 export async function runDemo(_: GenState, fd: FormData): Promise<GenState> {
-  await requireInternal()
+  await requireWorkspace()
   const demo = DEMOS.find((d) => d.id === str(fd, 'demo', 20))
   const input = str(fd, 'input', 6000)
   if (!demo || !input) return { error: 'Add some text first.' }
-  if (!llmEnabled()) return { error: NO_LLM }
-  const text = await generate(demo.prompt + '\n\n' + data(input), { max: 800 })
+  if (!enabledProviders().length) return { error: NO_LLM }
+  const steps = await runAuto('general', '', demo.prompt + '\n\n' + data(input))
+  const text = steps.find((x) => x.reply)?.reply?.text
   return text ? { text } : { error: 'That did not finish. Try again in a moment.' }
 }
 
 export async function rateDemo(fd: FormData) {
-  const ctx = await requireInternal()
+  const ctx = await requireWorkspace()
   const demo = DEMOS.find((d) => d.id === str(fd, 'demo', 20))
   if (!demo) return
   const up = str(fd, 'v', 4) === 'up'

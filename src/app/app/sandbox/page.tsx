@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { headers } from 'next/headers'
 import { requireWorkspace } from '@/lib/session'
 import { SandboxForm } from '@/components/forms'
@@ -14,6 +15,10 @@ export default async function Sandbox() {
   const host = (await headers()).get('host') ?? 'your-app.vercel.app'
   return (
     <div className="stack">
+      <div className="tabs">
+        <Link href="/app/sandbox" aria-current="page">Dry run and tools</Link>
+        <Link href="/app/sandbox/studio">AI Studio</Link>
+      </div>
       <div>
         <h1>Sandbox</h1>
         <p className="muted">

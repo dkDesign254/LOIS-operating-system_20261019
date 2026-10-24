@@ -2,7 +2,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getCtx } from '@/lib/session'
 import { MfaGate } from './mfa'
-import { setRequestStatus } from './actions'
+import { setRequestStatus, extendTrial } from './actions'
+import { ActionForm } from '@/components/forms'
 
 export const metadata = { title: 'Staff console' }
 export const dynamic = 'force-dynamic'
@@ -57,6 +58,16 @@ export default async function Internal() {
             </tbody>
           </table>
         ) : <p className="muted">No requests. Respond to each within 30 days.</p>}
+      </div>
+      <div className="card">
+        <h2>Extend someone&apos;s sandbox trial</h2>
+        <ActionForm action={extendTrial as never} submit="Extend">
+          <div className="grid two">
+            <div><label htmlFor="te">Their email</label><input id="te" name="email" type="email" required /></div>
+            <div><label htmlFor="td">Days (1 to 90)</label><input id="td" name="days" type="number" min={1} max={90} defaultValue={14} required /></div>
+          </div>
+          <label htmlFor="tn">Note (optional)</label><input id="tn" name="note" maxLength={200} />
+        </ActionForm>
       </div>
       <div className="card">
         <h2>What new people say they want (aggregate)</h2>

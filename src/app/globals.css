@@ -192,3 +192,15 @@ details.measure summary { cursor: pointer; }
 .dots i.on { background: var(--gold); }
 .legal h2 { margin-top: 1.5rem; }
 .legal { max-width: 760px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+/* sandbox trial countdown */
+.trial { background: #e7ecf8; border-radius: 12px; padding: 0.7rem 1rem; margin-bottom: 1rem; display: grid; gap: 0.5rem; }
+.trial.warn { background: #fff4d6; }
+.trial.crit { background: var(--bad-soft); }
+.trial .bar { height: 6px; background: rgba(11, 31, 58, 0.12); border-radius: 3px; overflow: hidden; }
+.trial .bar i { display: block; height: 100%; background: var(--gold); }
+.tabs { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.tabs a { padding: 0.4rem 0.9rem; border-radius: 999px; border: 1px solid var(--line); text-decoration: none; color: var(--ink); font-size: 0.9rem; }
+.tabs a[aria-current='page'] { background: var(--navy); color: #fff; border-color: var(--navy); }
+.reply { border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; background: var(--bg); white-space: pre-wrap; }
+.reply .meta { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; white-space: normal; }
