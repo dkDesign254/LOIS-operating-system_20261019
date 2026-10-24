@@ -61,6 +61,7 @@ export function friendlyAuthError(msg: string): string {
   if (m.includes('email not confirmed')) return 'Please confirm your email first. We sent you a link when you registered.'
   if (m.includes('password') && (m.includes('weak') || m.includes('short') || m.includes('at least'))) return 'Choose a longer password (at least 10 characters).'
   if (m.includes('provider is not enabled') || m.includes('unsupported provider')) return 'Google sign-in is not switched on yet. Use an email code for now.'
+  if (m.includes('already been used') || m.includes('flow_state_already_used')) return 'That sign-in link was already used or the page was reloaded. Start again from the sign-in page and wait a few seconds after choosing Google.'
   if (m.includes('exchange external code')) return 'Google accepted you, but LOIS could not complete the sign-in. The Google client ID or secret in Supabase is probably wrong. Use an email code for now.'
   return 'Something went wrong. Please try again.'
 }

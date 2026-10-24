@@ -1,9 +1,10 @@
 'use client'
-import { useState, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { supabaseBrowser } from '@/lib/supabase/client'
 import { friendlyAuthError } from '@/lib/policy'
+import { SITE_URL } from '@/lib/site'
 
 const OAUTH = (process.env.NEXT_PUBLIC_OAUTH_PROVIDERS ?? '').split(',').map((s) => s.trim()).filter(Boolean) as ('google' | 'github')[]
 
@@ -26,8 +27,12 @@ function Form() {
   const [error, setError] = useState<string | null>(params.get('error') ? friendlyAuthError(params.get('why') ?? '') === 'Something went wrong. Please try again.' ? `That link or sign-in did not work${params.get('why') ? ` (${params.get('why')})` : ''}. Request a new one or try another method.` : friendlyAuthError(params.get('why') ?? '') : null)
   const [note, setNote] = useState<string | null>(null)
 
+  // Always sign in on the public address, so the sign-in check and the return trip happen in the same place.
+  useEffect(() => {
+    if (location.hostname !== 'localhost' && location.origin !== SITE_URL) location.replace(`${SITE_URL}${location.pathname}${location.search}`)
+  }, [])
   const cleanEmail = () => email.trim().toLowerCase()
-  const redirectTo = (to: string) => `${location.origin}/auth/callback?next=${encodeURIComponent(to)}`
+  const redirectTo = (to: string) => `${SITE_URL}/auth/callback?next=${encodeURIComponent(to)}`
   function reset(m: Mode) {
     setMode(m)
     setError(null)

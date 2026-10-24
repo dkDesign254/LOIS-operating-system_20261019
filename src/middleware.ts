@@ -1,11 +1,22 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
+import { SITE_URL, isTeamAlias } from '@/lib/site'
 
 // Refreshes the Supabase session cookie and keeps /app behind sign-in.
 export async function middleware(req: NextRequest) {
   // If Supabase falls back to the Site URL (redirect URL not on its allow-list), the sign-in code arrives at the
   // homepage or /login. Hand it to the callback so the person still lands inside the app.
   const p = req.nextUrl.pathname
+  // Anyone who reaches the team-only address (for example because they are signed in to Vercel) is moved to the public one.
+  if (isTeamAlias(req.nextUrl.host)) return NextResponse.redirect(`${SITE_URL}${p}${req.nextUrl.search}`)
+  // Supabase sent an error to the homepage: show it on the sign-in screen instead of a dead end.
+  if ((p === '/' || p === '/login') && req.nextUrl.searchParams.get('error_code')) {
+    const to = req.nextUrl.clone()
+    to.pathname = '/login'
+    const why = req.nextUrl.searchParams.get('error_description') ?? req.nextUrl.searchParams.get('error_code') ?? ''
+    to.search = `?error=1&why=${encodeURIComponent(why.slice(0, 160))}`
+    return NextResponse.redirect(to)
+  }
   if ((p === '/' || p === '/login') && req.nextUrl.searchParams.get('code')) {
     const to = req.nextUrl.clone()
     to.pathname = '/auth/callback'
