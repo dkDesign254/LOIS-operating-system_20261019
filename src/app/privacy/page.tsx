@@ -5,8 +5,8 @@ export const metadata = { title: 'Privacy notice' }
 
 export default function Privacy() {
   return (
-    <main className="legal">
-      <Link href="/" className="brand" style={{ color: 'var(--navy)' }}><i /> LOIS</Link>
+    <main className="legal" id="main">
+      <Link href="/" className="brand" style={{ color: 'var(--ink)' }}><i /> LOIS</Link>
       <h1 style={{ marginTop: '1rem' }}>Privacy notice</h1>
       <p className="muted">Version {POLICY_VERSION}. LOIS is operated by The Lucrebag, Nairobi, Kenya. This notice is written to follow the Kenya Data Protection Act, 2019 and the principles of the GDPR (lawfulness, purpose limitation, minimisation, accuracy, storage limitation, security). It is a plain-language working draft and should be reviewed by a qualified lawyer before you rely on it as a legal document.</p>
 

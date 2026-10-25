@@ -35,7 +35,7 @@ export function Assessment({ email }: { email: string }) {
   return (
     <div className="authwrap">
       <div className="card">
-        <span className="brand" style={{ color: 'var(--navy)' }}><i /> LOIS</span>
+        <span className="brand" style={{ color: 'var(--ink)' }}><i /> LOIS</span>
         <div className="dots" aria-hidden>
           {[0, 1, 2, 3].map((i) => <i key={i} className={i <= step ? 'on' : ''} />)}
         </div>

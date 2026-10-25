@@ -107,7 +107,7 @@ function Form() {
   return (
     <div className="authwrap">
       <div className="card">
-        <Link href="/" className="brand" style={{ color: 'var(--navy)' }}>
+        <Link href="/" className="brand" style={{ color: 'var(--ink)' }}>
           <i /> LOIS
         </Link>
         <h1 style={{ marginTop: '1rem', fontSize: '1.6rem' }}>{title}</h1>

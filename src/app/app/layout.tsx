@@ -81,7 +81,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </form>
         </div>
       </aside>
-      <main className="main">
+      <main className="main" id="main">
         <TrialBanner trial={trial} />
         <PageGuide />
         {children}

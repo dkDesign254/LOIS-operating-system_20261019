@@ -43,7 +43,7 @@ export default async function Rewards() {
         </div>
         <div className="card">
           <div className="row">
-            <Icon name="trophy" style={{ width: 22, height: 22, color: 'var(--gold)' }} />
+            <Icon name="trophy" style={{ width: 22, height: 22, color: 'var(--blue)' }} />
             <b>Weekly challenge: make {target} contributions</b>
           </div>
           <div className="progress" style={{ margin: '0.75rem 0 0.4rem' }}>

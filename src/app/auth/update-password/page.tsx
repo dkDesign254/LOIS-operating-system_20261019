@@ -26,7 +26,7 @@ export default function UpdatePassword() {
   return (
     <div className="authwrap">
       <div className="card">
-        <Link href="/" className="brand" style={{ color: 'var(--navy)' }}><i /> LOIS</Link>
+        <Link href="/" className="brand" style={{ color: 'var(--ink)' }}><i /> LOIS</Link>
         <h1 style={{ marginTop: '1rem', fontSize: '1.6rem' }}>Choose a new password</h1>
         <form onSubmit={save}>
           <label htmlFor="pw">New password (at least 10 characters)</label>

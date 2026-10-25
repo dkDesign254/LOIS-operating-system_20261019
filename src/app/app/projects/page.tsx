@@ -24,7 +24,7 @@ export default async function Projects() {
       <div className="grid two">
         {(projects ?? []).map((p) => (
           <div className="card" key={p.project_id}>
-            <Icon name="folder" style={{ width: 24, height: 24, color: 'var(--gold)' }} />
+            <Icon name="folder" style={{ width: 24, height: 24, color: 'var(--blue)' }} />
             <h3 style={{ marginTop: '0.4rem' }}>{p.name}</h3>
             <p className="muted">{p.description ?? 'No description.'}</p>
             <Link className="btn ghost small" href="/app/knowledge">
