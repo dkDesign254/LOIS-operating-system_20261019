@@ -31,6 +31,7 @@ export default function Home() {
           <a href="#what">What it does</a>
           <a href="#studio">AI Studio</a>
           <a href="#trust">Trust</a>
+          <Link href="/resources">Guides</Link>
           <Link href="/login">Sign in</Link>
           <Link className="btn small" href="/login?mode=signup">
             Get started free
@@ -157,7 +158,7 @@ export default function Home() {
       </section>
 
       <footer className="foot">
-        The Lucrebag · LOIS Knowledge Layer · <Link href="/privacy">Privacy</Link>
+        The Lucrebag · LOIS Knowledge Layer · <Link href="/resources">Guides</Link> · <Link href="/privacy">Privacy</Link>
       </footer>
     </>
   )

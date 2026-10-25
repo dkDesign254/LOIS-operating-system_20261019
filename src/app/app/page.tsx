@@ -41,6 +41,16 @@ export default async function Ask({ searchParams }: { searchParams: Promise<{ c?
       .order('created_at', { ascending: true })
     messages = (data ?? []) as Msg[]
   }
+  let attention: { pending: number; help: number; flagged: number } | null = null
+  if (ctx.isReviewer) {
+    const cnt = (q: PromiseLike<{ count: number | null }>) => q.then((r) => r.count ?? 0)
+    const [pending, help, flagged] = await Promise.all([
+      cnt(ctx.sb.from('lois_knowledge_items').select('knowledge_id', { count: 'exact', head: true }).eq('tenant_id', ctx.ws.tenant_id).eq('status', 'pending_review')),
+      cnt(ctx.sb.from('lois_help_requests').select('help_id', { count: 'exact', head: true }).eq('tenant_id', ctx.ws.tenant_id).eq('status', 'open')),
+      cnt(ctx.sb.from('lois_knowledge_items').select('knowledge_id', { count: 'exact', head: true }).eq('tenant_id', ctx.ws.tenant_id).eq('status', 'pending_review').eq('metadata->>flagged', 'true')),
+    ])
+    attention = { pending, help, flagged }
+  }
   const lastUser = [...messages].reverse().find((m) => m.role === 'user')
 
   return (
@@ -60,6 +70,12 @@ export default async function Ask({ searchParams }: { searchParams: Promise<{ c?
       </aside>
 
       <section className="stack" style={{ minWidth: 0 }}>
+        {attention && (attention.pending > 0 || attention.help > 0) && (
+          <div className="strip" aria-label="Needs your attention">
+            <Link className="tile" href="/app/bank"><div className="k">Waiting for review</div><div className="v">{attention.pending}</div><div className="s">knowledge bank entries{attention.flagged ? ` · ${attention.flagged} flagged` : ''}</div></Link>
+            <Link className="tile" href="/app/help"><div className="k">Open help requests</div><div className="v">{attention.help}</div><div className="s">questions waiting for a person</div></Link>
+          </div>
+        )}
         {sp.error && <div className="banner">{ERRORS[sp.error] ?? 'Something went wrong.'}</div>}
         {sp.thanks && <div className="banner">Thanks. Your feedback helps reviewers improve the knowledge bank.</div>}
 

@@ -12,7 +12,7 @@ export function Nav({ items }: { items: NavItem[] }) {
       {items.map((i) => {
         const active = i.href === '/app' ? path === '/app' : path.startsWith(i.href)
         return (
-          <Link key={i.href} href={i.href} aria-current={active ? 'page' : undefined}>
+          <Link key={i.href} href={i.href} aria-label={i.label} title={i.label} aria-current={active ? 'page' : undefined}>
             <Icon name={i.icon} />
             <span>{i.label}</span>
           </Link>

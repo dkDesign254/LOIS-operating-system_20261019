@@ -4,6 +4,7 @@ import { Nav, type NavItem } from '@/components/nav'
 import { Icon } from '@/components/icons'
 import { PageGuide } from '@/components/page-guide'
 import { TrialBanner } from '@/components/trial-banner'
+import { AskLauncher } from '@/components/ask-launcher'
 import { getTrial } from '@/lib/trial'
 import { signOut, switchWorkspace } from './actions'
 
@@ -27,11 +28,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           : []),
         { href: '/app', label: 'Ask LOIS', icon: 'chat' },
         { href: '/app/knowledge', label: 'Knowledge base', icon: 'book' },
+        { href: '/app/intake', label: 'Intake', icon: 'archive' },
         { href: '/app/bank', label: 'Knowledge bank', icon: 'shield' },
         { href: '/app/help', label: 'Get help', icon: 'lifebuoy' },
         { href: '/app/projects', label: 'Projects', icon: 'folder' },
         { href: '/app/sandbox', label: 'Sandbox', icon: 'flask' },
+        { href: '/app/readiness', label: 'Agent readiness', icon: 'spark' },
         { href: '/app/learn', label: 'Learn LOIS', icon: 'learn' },
+        { href: '/resources', label: 'Guides', icon: 'note' },
         { href: '/app/rewards', label: 'Rewards', icon: 'trophy' },
         { href: '/app/integrations', label: 'Integrations', icon: 'plug' },
         { href: '/app/team', label: 'Team', icon: 'users' },
@@ -49,7 +53,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </Link>
         {ctx.workspaces.length > 0 && (
           <form action={switchWorkspace}>
-            <label htmlFor="tenant" style={{ color: '#9fb0c8' }}>
+            <label htmlFor="tenant">
               Workspace
             </label>
             <select id="tenant" name="tenant" defaultValue={ctx.ws?.tenant_id}>
@@ -86,6 +90,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <PageGuide />
         {children}
       </main>
+      {ctx.ws && <AskLauncher />}
     </div>
   )
 }

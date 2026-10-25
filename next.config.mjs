@@ -19,6 +19,8 @@ const csp = [
 const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  experimental: { serverActions: { bodySizeLimit: '4mb' } },
+  serverExternalPackages: ['unpdf'],
   async headers() {
     return [
       {

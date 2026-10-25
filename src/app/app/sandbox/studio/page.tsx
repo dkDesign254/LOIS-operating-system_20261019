@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { requireWorkspace } from '@/lib/session'
 import { StudioForm } from '@/components/studio-form'
+import { RunTrace } from '@/components/run-trace'
 import { getTrial } from '@/lib/trial'
 import { providerStatus, TASKS } from '@/lib/models'
 import { studioRun, deleteSession } from '../../studio-actions'
@@ -62,6 +63,7 @@ export default async function Studio({ searchParams }: { searchParams: Promise<{
               </div>
             ),
           )}
+          {sp.s && turns && <RunTrace turns={turns as never} />}
           <StudioForm action={studioRun} session={sp.s} tasks={TASKS} disabled={trial?.ended ? 'Your 25-day trial has ended. Ask the LOIS team to extend it.' : undefined} />
           {sp.s && (
             <form action={deleteSession}>
