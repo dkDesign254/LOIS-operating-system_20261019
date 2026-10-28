@@ -1,4 +1,4 @@
-# LOIS smoke test (10 minutes)
+# LOIS smoke test (21 steps)
 
 Prepared for Dustine Kibagendi, The Lucrebag. Run in a private window after each deploy. Tick each line; send anything that differs from "Expect" to Claude with a screenshot.
 
@@ -24,3 +24,4 @@ Prepared for Dustine Kibagendi, The Lucrebag. Run in a private window after each
 | 18 | Staff console, Vault: store an item. Then check a normal account | Staff see it; a normal account gets a 404 for `/internal/vault` |
 | 19 | Open `/robots.txt` and `/sitemap.xml` | `/app`, `/internal`, `/api` are disallowed; `/try` and guides listed |
 | 20 | Open the `-dkdesign254s-projects` address after turning Protection off | It redirects to the public address, no Vercel login |
+| 21 | Sign in as dustinekibagendi.hpgk@gmail.com, open Knowledge bank, press Accept on one entry and Reject on another | The queue shows the pending entries; each press shows "Accepted" or "Rejected" and the entry moves tab |

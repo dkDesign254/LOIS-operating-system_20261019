@@ -34,4 +34,11 @@ The privacy notice at `/privacy` is a working draft written to follow the Kenya 
 - **Internal surface**: the Control Centre pages (Start here, Decisions, Memory, Business arms, Automations, Data & backups) only open in staff workspaces (holding company and business arms). A customer who types the address gets a 404.
 - **Who is staff**: only emails on `lois_admin_allowlist` with a confirmed address. They become owner of the internal workspaces on sign-in. Staff-only workspaces cannot invite anyone who is not on the allow-list (database trigger), and nobody can change a workspace's type except staff (KB-013b).
 - **Staff console** (`/internal`): needs the allow-list plus a second factor (authenticator app, TOTP). The database refuses the console data (`lois_staff_overview`, answer summary, privacy requests) to a session that has not passed the second factor, so it is enforced even if the page were bypassed.
-- **Vercel setting**: Deployment Protection must be "Standard Protection" and people must always use the production address `lois-operating-system20261019.vercel.app`. The `-dkdesign254s-projects` address is team-only and asks for a Vercel login.
+- **Vercel setting**: set Deployment Protection > Vercel Authentication to Disabled (the app has its own sign-in and row-level security) and make people use the production address `lois-operating-system20261019.vercel.app`. The `-dkdesign254s-projects` address is team-only and asks for a Vercel login until protection is off. The code ignores that address in `NEXT_PUBLIC_SITE_URL` and redirects to the public one.
+
+## Asking for internal access (KB-017, 28 Oct 2026)
+- New accounts only ever get their own `client` workspace.
+- A person asks for team access at `/app/access` (reason, level: viewer, member or reviewer). One pending request each.
+- Only an allow-listed staff member with a second factor can approve or deny, in the Staff console. Approving needs an internal workspace and one of those three roles and creates the membership through `lois_decide_access`.
+- A database trigger (`guard_internal_membership`) refuses any other way into an internal workspace.
+- Every allow-listed, confirmed staff email owns both internal workspaces (KB-020), so the review queue is visible to all of them.

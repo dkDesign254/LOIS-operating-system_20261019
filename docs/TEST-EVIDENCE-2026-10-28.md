@@ -41,3 +41,6 @@ Order: Discovery / Access / Usability / Trust.
 - Live sign-in, email sending, and any signed-in click-through (the shell cannot reach the hosts; the Vercel connector returns 404 for this project).
 - Voice playback (depends on the visitor's browser).
 - Approve and reject in a live browser (database level only).
+
+## Where the documents are filed
+Google Drive, folder "LOIS — Lucrebag Operating Intelligence System": 01_Architecture (build record, sign-in and privacy, AI Studio, Control Centre, migrations), 02_Stage_Logs (feature audit), 04_Test_Evidence (smoke test, this file), 05_Runbooks (owner steps), plus "LOIS Document Index 2026-10-28.md" at the top level. Repo copies are in `docs/` and `supabase/migrations/`.

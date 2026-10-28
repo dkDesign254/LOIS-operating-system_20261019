@@ -24,7 +24,7 @@ Sign in as thelucrebag@gmail.com, dustinekibagendi.hpgk@gmail.com or admin.lucre
 Open Knowledge bank. Accept or reject the pending entries (69 harvested). Rejected entries are read-only.
 
 ## 6. Run the smoke test
-`docs/SMOKE-TEST.md`, 20 steps.
+`docs/SMOKE-TEST.md`, 21 steps.
 
 ## 7. Decisions needed from you
 - Which Google Drive folder should hold a copy of the closed vault, and who may open it.
