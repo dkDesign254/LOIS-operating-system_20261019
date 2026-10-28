@@ -5,6 +5,7 @@ import { BriefMe } from '@/components/control'
 import { Guide, Pill, Tile, sevTone } from '@/components/ui'
 import { readiness, type Brief, type Challenge } from '@/lib/readiness'
 import { addTask, completeTask } from '../control-actions'
+import { SubmitButton } from '@/components/submit-button'
 
 export const metadata = { title: 'Start here' }
 
@@ -102,7 +103,7 @@ export default async function Control() {
                 </div>
                 <div className="row">
                   <Pill tone={x.kind === 'blocker' ? 'crit' : x.kind === 'learn' ? 'info' : 'warn'}>{x.kind}</Pill>
-                  <form action={completeTask}><input type="hidden" name="id" value={x.task_id} /><button className="btn small">Mark done</button></form>
+                  <form action={completeTask}><input type="hidden" name="id" value={x.task_id} /><SubmitButton className="btn small">Mark done</SubmitButton></form>
                 </div>
               </li>
             ))}

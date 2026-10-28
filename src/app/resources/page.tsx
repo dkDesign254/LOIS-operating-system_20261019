@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { GUIDES } from '@/lib/guides'
 
-export const metadata = { title: 'Resources', description: 'Free practical guides on being found by AI agents, working with AI models, turning documents into trusted knowledge and keeping a person in charge of decisions.', robots: { index: true, follow: true } }
+export const metadata = { title: 'Resources', description: 'Free practical guides on being found by AI agents, working with AI models, turning documents into trusted knowledge and keeping a person in charge of decisions.', alternates: { canonical: '/resources' } }
 
 export default function Resources() {
   const topics = [...new Set(GUIDES.map((g) => g.topic))]
@@ -29,7 +29,7 @@ export default function Resources() {
           </section>
         ))}
       </main>
-      <footer className="foot">The Lucrebag · LOIS Knowledge Layer · <Link href="/privacy">Privacy</Link></footer>
+      <footer className="foot">The Lucrebag · LOIS Knowledge Layer · <Link href="/privacy">Privacy</Link> · <Link href="/privacy#contact">Contact</Link></footer>
     </>
   )
 }

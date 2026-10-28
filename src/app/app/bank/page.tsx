@@ -2,7 +2,9 @@ import Link from 'next/link'
 import { requireWorkspace } from '@/lib/session'
 import { ActionForm } from '@/components/forms'
 import { Icon } from '@/components/icons'
-import { expireKnowledge, reviewKnowledge, submitKnowledge } from '../actions'
+import { expireKnowledge, submitKnowledge } from '../actions'
+import { ReviewButtons } from '@/components/review-buttons'
+import { SubmitButton } from '@/components/submit-button'
 
 export const metadata = { title: 'Knowledge bank' }
 
@@ -65,22 +67,14 @@ export default async function Bank({ searchParams }: { searchParams: Promise<{ s
               </p>
               {ctx.isReviewer && i.status === 'pending_review' && (
                 <div className="row">
-                  <form action={reviewKnowledge}>
-                    <input type="hidden" name="id" value={i.knowledge_id} />
-                    <button className="btn" name="decision" value="approved">
-                      Accept
-                    </button>{' '}
-                    <button className="btn ghost" name="decision" value="rejected">
-                      Reject
-                    </button>
-                  </form>
+                  <ReviewButtons id={i.knowledge_id} />
                   <span className="muted small">Accepting makes it searchable and awards points to the author.</span>
                 </div>
               )}
               {ctx.isReviewer && i.status === 'approved' && (
                 <form action={expireKnowledge}>
                   <input type="hidden" name="id" value={i.knowledge_id} />
-                  <button className="btn ghost small">Mark as out of date</button>
+                  <SubmitButton className="btn ghost small">Mark as out of date</SubmitButton>
                 </form>
               )}
             </div>

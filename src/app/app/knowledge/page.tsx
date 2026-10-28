@@ -2,6 +2,7 @@ import { requireWorkspace } from '@/lib/session'
 import { ActionForm } from '@/components/forms'
 import { Icon } from '@/components/icons'
 import { addDocument, archiveDocument, reindexAction } from '../actions'
+import { SubmitButton } from '@/components/submit-button'
 
 export const metadata = { title: 'Knowledge base' }
 
@@ -29,7 +30,7 @@ export default async function Knowledge({ searchParams }: { searchParams: Promis
         </p>
         {canAdd && (
           <form action={reindexAction} style={{ marginTop: 8 }}>
-            <button className="btn" type="submit">Refresh semantic index</button>
+            <SubmitButton className="btn" type="submit">Refresh semantic index</SubmitButton>
             {sp.indexed !== undefined && <span className="muted"> Indexed {Number(sp.indexed) || 0} new passage(s).</span>}
           </form>
         )}
@@ -104,7 +105,7 @@ export default async function Knowledge({ searchParams }: { searchParams: Promis
                     {ctx.isReviewer && (
                       <form action={archiveDocument}>
                         <input type="hidden" name="id" value={d.document_id} />
-                        <button className="btn ghost small">Archive</button>
+                        <SubmitButton className="btn ghost small">Archive</SubmitButton>
                       </form>
                     )}
                   </td>

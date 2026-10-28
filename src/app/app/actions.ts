@@ -236,19 +236,24 @@ export async function submitKnowledge(_: FormState, fd: FormData): Promise<FormS
   return { ok: true, message: 'Submitted for review. It becomes searchable once a reviewer accepts it.' }
 }
 
-export async function reviewKnowledge(fd: FormData) {
+export async function reviewKnowledge(_: FormState, fd: FormData): Promise<FormState> {
   const ctx = await requireWorkspace()
   const decision = str(fd, 'decision', 20)
-  if (!['approved', 'rejected'].includes(decision)) return
+  if (!['approved', 'rejected'].includes(decision)) return { error: 'Choose Accept or Reject.' }
   const id = str(fd, 'id', 64)
-  const { error } = await ctx.sb.from('lois_knowledge_items').update({ status: decision }).eq('knowledge_id', id).eq('status', 'pending_review')
-  if (!error) {
+  // .select() returns the rows that really changed, so a refused or already-reviewed entry is reported, never silent.
+  const { data, error } = await ctx.sb.from('lois_knowledge_items').update({ status: decision }).eq('knowledge_id', id).eq('status', 'pending_review').select('knowledge_id')
+  if (error) return { error: error.message.includes('second reviewer') ? 'A second reviewer must approve this one.' : error.message.includes('reviewer role') ? 'Only reviewers, admins and owners can do this.' : 'Could not save that decision. Try again.' }
+  if (!data?.length) return { error: 'Nothing changed. It may already be reviewed, or you may not have review rights in this workspace.' }
+  // The decision is saved. Indexing, analytics and webhooks are extras: if one fails the decision still stands.
+  try {
     if (decision === 'approved') await indexEmbeddings(ctx.sb, ctx.ws.tenant_id, 1)
     await neonLog('bank.' + decision, { tenant_id: ctx.ws.tenant_id, actor: ctx.user.id, ref: id })
     await dispatch(ctx.sb, ctx.ws.tenant_id, decision === 'approved' ? 'knowledge.approved' : 'knowledge.rejected', { knowledge_id: id })
-  }
+  } catch {}
   revalidatePath('/app/bank')
-  if (error) redirect(`/app/bank?error=${encodeURIComponent(error.message)}`)
+  revalidatePath('/app', 'layout')
+  return { ok: true, message: decision === 'approved' ? 'Accepted. It is now searchable.' : 'Rejected.' }
 }
 
 export async function expireKnowledge(fd: FormData) {

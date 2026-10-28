@@ -5,7 +5,7 @@ import { GUIDES, getGuide } from '@/lib/guides'
 export function generateStaticParams() { return GUIDES.map((g) => ({ slug: g.slug })) }
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const g = getGuide((await params).slug)
-  return g ? { title: g.title, description: g.summary, robots: { index: true, follow: true } } : {}
+  return g ? { title: g.title, description: g.summary.length > 165 ? g.summary.slice(0, 162).replace(/\s+\S*$/, '') + '...' : g.summary, alternates: { canonical: `/resources/${g.slug}` } } : {}
 }
 
 export default async function GuidePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -30,7 +30,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         {g.inLois && (<p><Link className="btn" href={g.inLois.href}>{g.inLois.label}</Link></p>)}
         <p className="small muted">Guidance only, not legal or technical advice for your specific situation. Conventions such as llms.txt are proposals, and AI systems differ in what they read.</p>
       </main>
-      <footer className="foot">The Lucrebag · LOIS Knowledge Layer · <Link href="/resources">All guides</Link> · <Link href="/privacy">Privacy</Link></footer>
+      <footer className="foot">The Lucrebag · LOIS Knowledge Layer · <Link href="/resources">All guides</Link> · <Link href="/privacy">Privacy</Link> · <Link href="/privacy#contact">Contact</Link></footer>
     </>
   )
 }

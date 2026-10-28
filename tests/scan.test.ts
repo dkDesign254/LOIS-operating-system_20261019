@@ -30,3 +30,11 @@ test('private addresses and odd URLs are refused', () => {
   assert.equal(normaliseUrl('user:pw@a.com')?.hostname ?? null, null)
   assert.equal(normaliseUrl('example.com')?.hostname, 'example.com')
 })
+test('headings with attributes are counted (regression: class on h1 was missed)', () => {
+  const r = analyze({ url: 'https://a.co/', status: 200, ms: 300, html: '<html><body><h1 class="x">Title</h1><h2 id="a">A</h2></body></html>' }, { robots: null, sitemap: false, llms: false })
+  assert.equal(r.checks.find((c) => c.id === 'h1')!.ok, true)
+})
+test('inputs wrapped in a label count as labelled', () => {
+  const r = analyze({ url: 'https://a.co/', status: 200, ms: 300, html: '<html><body><label><input type="checkbox"> Agree</label></body></html>' }, { robots: null, sitemap: false, llms: false })
+  assert.equal(r.checks.find((c) => c.id === 'forms')!.ok, true)
+})

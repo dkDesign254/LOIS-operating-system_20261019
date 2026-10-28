@@ -60,12 +60,13 @@ export function analyze(p: Page, x: Extras): Result {
   const h = p.html
   const title = tag(h, /<title[^>]*>([\s\S]*?)<\/title>/i)
   const desc = metaContent(h, 'name', 'description')
-  const h1s = (h.match(/<h1[\b>]/gi) ?? []).length
-  const h2s = (h.match(/<h2[\b>]/gi) ?? []).length
+  const h1s = (h.match(/<h1(?=[\s>])/gi) ?? []).length
+  const h2s = (h.match(/<h2(?=[\s>])/gi) ?? []).length
   const imgs = h.match(/<img\b[^>]*>/gi) ?? []
   const withAlt = imgs.filter((i) => /\balt=["'][^"']+["']/i.test(i)).length
   const inputs = (h.match(/<(input|select|textarea)\b[^>]*>/gi) ?? []).filter((i) => !/type=["']?(hidden|submit|button|image|reset)/i.test(i))
-  const labelled = inputs.filter((i) => /aria-label=|aria-labelledby=|\bplaceholder=/i.test(i) || (i.match(/\bid=["']([^"']+)["']/i) && new RegExp(`<label[^>]*for=["']${i.match(/\bid=["']([^"']+)["']/i)![1]}["']`, 'i').test(h))).length
+  const wrapped = (h.match(/<label\b[^>]*>[\s\S]*?<\/label>/gi) ?? []).join('')
+  const labelled = inputs.filter((i) => wrapped.includes(i) || /aria-label=|aria-labelledby=|\bplaceholder=/i.test(i) || (i.match(/\bid=["']([^"']+)["']/i) && new RegExp(`<label[^>]*for=["']${i.match(/\bid=["']([^"']+)["']/i)![1]}["']`, 'i').test(h))).length
   const text = visibleText(h)
   const ld = /<script[^>]*type=["']application\/ld\+json["']/i.test(h)
   const ai = blockedAiBots(x.robots)

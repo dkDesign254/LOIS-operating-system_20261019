@@ -3,6 +3,7 @@ import { ActionForm } from '@/components/forms'
 import { BriefingView } from '@/components/briefing-view'
 import { todayBriefing } from '@/lib/briefing-data'
 import { savePrefs, briefNow } from './actions'
+import { SubmitButton } from '@/components/submit-button'
 
 export const metadata = { title: 'Daily briefing' }
 export const dynamic = 'force-dynamic'
@@ -26,7 +27,7 @@ export default async function Briefing() {
             {t!.state === 'early' ? `Your briefing is ready at ${p.send_time.slice(0, 5)} Nairobi time.` : t!.state === 'ask_weekend' ? 'It is the weekend. Want a briefing anyway?' : 'Briefings are off for today.'}
           </p>
         )}
-        <form action={briefNow}><button className="btn ghost small">{t!.briefing ? 'Refresh now' : 'Brief me now'}</button> <span className="muted small">Up to six a day.</span></form>
+        <form action={briefNow}><SubmitButton className="btn ghost small">{t!.briefing ? 'Refresh now' : 'Brief me now'}</SubmitButton> <span className="muted small">Up to six a day.</span></form>
       </section>
       <section className="card">
         <h2>When and how</h2>

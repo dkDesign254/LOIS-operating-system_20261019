@@ -1,6 +1,7 @@
 import { getCtx } from '@/lib/session'
 import { ActionForm } from '@/components/forms'
 import { requestInternalAccess, withdrawAccessRequest } from './actions'
+import { SubmitButton } from '@/components/submit-button'
 
 export const metadata = { title: 'Access' }
 export const dynamic = 'force-dynamic'
@@ -51,7 +52,7 @@ export default async function Access() {
                 {r.status === 'pending' && (
                   <form action={withdrawAccessRequest} style={{ marginTop: '0.4rem' }}>
                     <input type="hidden" name="id" value={r.request_id} />
-                    <button className="btn ghost small">Withdraw</button>
+                    <SubmitButton className="btn ghost small">Withdraw</SubmitButton>
                   </form>
                 )}
               </li>

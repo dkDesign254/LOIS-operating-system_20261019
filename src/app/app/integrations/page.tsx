@@ -3,6 +3,7 @@ import { requireWorkspace } from '@/lib/session'
 import { ActionForm } from '@/components/forms'
 import { neonConfigured, neonSummary } from '@/lib/neon'
 import { createApiKey, createWebhook, deleteWebhook, revokeApiKey } from '../actions'
+import { SubmitButton } from '@/components/submit-button'
 
 export const metadata = { title: 'Integrations' }
 
@@ -77,7 +78,7 @@ export default async function Integrations() {
                     ) : (
                       <form action={revokeApiKey}>
                         <input type="hidden" name="id" value={k.key_id} />
-                        <button className="btn ghost small">Revoke</button>
+                        <SubmitButton className="btn ghost small">Revoke</SubmitButton>
                       </form>
                     )}
                   </td>
@@ -117,7 +118,7 @@ export default async function Integrations() {
                   <td>
                     <form action={deleteWebhook}>
                       <input type="hidden" name="id" value={h.webhook_id} />
-                      <button className="btn ghost small">Remove</button>
+                      <SubmitButton className="btn ghost small">Remove</SubmitButton>
                     </form>
                   </td>
                 </tr>

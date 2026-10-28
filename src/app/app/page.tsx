@@ -4,6 +4,7 @@ import { Icon, type IconName } from '@/components/icons'
 import { Composer } from '@/components/forms'
 import { askAction, escalateAction, feedbackAction } from './actions'
 import type { Citation } from '@/lib/ask'
+import { SubmitButton } from '@/components/submit-button'
 
 export const metadata = { title: 'Ask LOIS' }
 
@@ -123,18 +124,18 @@ export default async function Ask({ searchParams }: { searchParams: Promise<{ c?
                 <form action={feedbackAction} className="row" style={{ gap: 6 }}>
                   <input type="hidden" name="message" value={m.message_id} />
                   <input type="hidden" name="conversation" value={sp.c} />
-                  <button className="btn ghost small" name="rating" value="1" aria-label="Helpful">
+                  <SubmitButton className="btn ghost small" name="rating" value="1" aria-label="Helpful">
                     Helpful
-                  </button>
-                  <button className="btn ghost small" name="rating" value="-1" aria-label="Not helpful">
+                  </SubmitButton>
+                  <SubmitButton className="btn ghost small" name="rating" value="-1" aria-label="Not helpful">
                     Not helpful
-                  </button>
+                  </SubmitButton>
                 </form>
                 <form action={escalateAction}>
                   <input type="hidden" name="message" value={m.message_id} />
                   <input type="hidden" name="conversation" value={sp.c} />
                   <input type="hidden" name="question" value={lastUser?.content ?? ''} />
-                  <button className="btn ghost small">{m.answer_mode === 'no_match' ? 'Ask a person' : 'Ask a person to check'}</button>
+                  <SubmitButton className="btn ghost small">{m.answer_mode === 'no_match' ? 'Ask a person' : 'Ask a person to check'}</SubmitButton>
                 </form>
               </div>
             )}

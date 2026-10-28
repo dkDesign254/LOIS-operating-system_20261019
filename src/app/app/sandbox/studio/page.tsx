@@ -5,6 +5,7 @@ import { RunTrace } from '@/components/run-trace'
 import { getTrial } from '@/lib/trial'
 import { providerStatus, TASKS } from '@/lib/models'
 import { studioRun, deleteSession } from '../../studio-actions'
+import { SubmitButton } from '@/components/submit-button'
 
 export const metadata = { title: 'AI Studio' }
 
@@ -68,7 +69,7 @@ export default async function Studio({ searchParams }: { searchParams: Promise<{
           {sp.s && (
             <form action={deleteSession}>
               <input type="hidden" name="id" value={sp.s} />
-              <button className="btn ghost small">Delete this session</button>
+              <SubmitButton className="btn ghost small">Delete this session</SubmitButton>
             </form>
           )}
         </section>

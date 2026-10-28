@@ -2,6 +2,7 @@ import { getCtx } from '@/lib/session'
 import { ActionForm } from '@/components/forms'
 import { requestData, withdrawUpdates } from '../actions'
 import { POLICY_VERSION } from '@/lib/policy'
+import { SubmitButton } from '@/components/submit-button'
 
 export const metadata = { title: 'Privacy & my data' }
 
@@ -27,7 +28,7 @@ export default async function PrivacyPage() {
       <div className="card">
         <h2>Product updates</h2>
         <p className="muted">{updates ? 'You are opted in.' : 'You are opted out.'}</p>
-        {updates && <form action={withdrawUpdates}><button className="btn ghost">Withdraw consent</button></form>}
+        {updates && <form action={withdrawUpdates}><SubmitButton className="btn ghost">Withdraw consent</SubmitButton></form>}
       </div>
       <div className="card">
         <h2>Make a request</h2>

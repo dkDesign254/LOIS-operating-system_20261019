@@ -3,6 +3,7 @@ import { requireWorkspace } from '@/lib/session'
 import { Icon } from '@/components/icons'
 import { MEASURES, type Action, type Check } from '@/lib/scan'
 import { scanSite, deleteScan } from './actions'
+import { SubmitButton } from '@/components/submit-button'
 
 export const metadata = { title: 'Agent readiness' }
 
@@ -35,7 +36,7 @@ export default async function Readiness({ searchParams }: { searchParams: Promis
             <label htmlFor="url">Website address</label>
             <input id="url" name="url" type="text" inputMode="url" placeholder="yourcompany.com" required maxLength={300} />
           </div>
-          <button className="btn" style={{ alignSelf: 'flex-end' }}>Check this site</button>
+          <SubmitButton className="btn" style={{ alignSelf: 'flex-end' }}>Check this site</SubmitButton>
         </form>
         {sp.error && <p className="err" role="alert">{sp.error}</p>}
       </div>
@@ -116,7 +117,7 @@ export default async function Readiness({ searchParams }: { searchParams: Promis
                     <Link href={`/app/readiness?scan=${s.scan_id}`}>{s.host}</Link>
                     <div className="small muted">{new Date(s.created_at).toLocaleDateString('en-GB')} · Discovery {sc.discovery} · Access {sc.access} · Usability {sc.usability} · Trust {sc.trust}</div>
                   </div>
-                  <form action={deleteScan}><input type="hidden" name="id" value={s.scan_id} /><button className="btn ghost small">Delete</button></form>
+                  <form action={deleteScan}><input type="hidden" name="id" value={s.scan_id} /><SubmitButton className="btn ghost small">Delete</SubmitButton></form>
                 </li>
               )
             })}

@@ -4,6 +4,7 @@ import { getCtx } from '@/lib/session'
 import { MfaGate } from '../mfa'
 import { saveVaultItem, deleteVaultItem } from '../actions'
 import { ActionForm } from '@/components/forms'
+import { SubmitButton } from '@/components/submit-button'
 
 export const metadata = { title: 'Vault', robots: { index: false, follow: false } }
 export const dynamic = 'force-dynamic'
@@ -32,7 +33,7 @@ export default async function Vault() {
         {items?.length ? <ul className="plainlist">{items.map((i) => (
           <li key={i.item_id} style={{ padding: '0.6rem 0' }}>
             <details><summary><b>{i.title}</b> <span className="muted small">{(i.tags as string[]).join(', ')}</span></summary><pre className="draft">{i.body}</pre></details>
-            <form action={deleteVaultItem}><input type="hidden" name="id" value={i.item_id} /><button className="btn ghost small">Delete</button></form>
+            <form action={deleteVaultItem}><input type="hidden" name="id" value={i.item_id} /><SubmitButton className="btn ghost small">Delete</SubmitButton></form>
           </li>))}</ul> : <p className="muted">Empty.</p>}
       </div>
     </div>

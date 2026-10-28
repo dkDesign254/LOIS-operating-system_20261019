@@ -1,6 +1,7 @@
 import { requireWorkspace } from '@/lib/session'
 import { Icon } from '@/components/icons'
 import { resolveHelp } from '../actions'
+import { SubmitButton } from '@/components/submit-button'
 
 export const metadata = { title: 'Get help' }
 
@@ -49,7 +50,7 @@ export default async function Help({ searchParams }: { searchParams: Promise<{ s
                 <label className="row" style={{ fontWeight: 400 }}>
                   <input type="checkbox" name="promote" defaultChecked /> Send this answer to the knowledge bank for review
                 </label>
-                <button className="btn">Resolve</button>
+                <SubmitButton className="btn">Resolve</SubmitButton>
               </form>
             )}
           </div>

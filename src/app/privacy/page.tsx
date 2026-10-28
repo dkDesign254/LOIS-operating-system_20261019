@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { POLICY_VERSION } from '@/lib/policy'
 
-export const metadata = { title: 'Privacy notice' }
+export const metadata = { title: 'Privacy notice', description: 'What LOIS collects, why, how long it is kept, and how to export, correct or delete your data.', alternates: { canonical: '/privacy' } }
 
 export default function Privacy() {
   return (
@@ -39,7 +39,7 @@ export default function Privacy() {
       <h2>Your rights</h2>
       <p>You can ask to see or download your data, correct it, restrict its use, withdraw consent, or have it deleted. Signed-in users can do this at <Link href="/app/privacy">Privacy</Link> inside LOIS, and download a copy instantly. We aim to respond within 30 days. You may also complain to the Office of the Data Protection Commissioner of Kenya (odpc.go.ke).</p>
 
-      <h2>Contact</h2>
+      <h2 id="contact">Contact</h2>
       <p>Dustine Kibagendi, The Lucrebag, Nairobi: thelucrebag@gmail.com.</p>
     </main>
   )

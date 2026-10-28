@@ -4,6 +4,7 @@ import { getCtx } from '@/lib/session'
 import { MfaGate } from './mfa'
 import { setRequestStatus, extendTrial, decideAccess, postUpdate, removeUpdate } from './actions'
 import { ActionForm } from '@/components/forms'
+import { SubmitButton } from '@/components/submit-button'
 
 export const metadata = { title: 'Staff console' }
 export const dynamic = 'force-dynamic'
@@ -58,8 +59,8 @@ export default async function Internal() {
                       <option value="viewer">viewer</option><option value="member">member</option><option value="reviewer">reviewer</option>
                     </select>
                     <input name="note" aria-label="Note" placeholder="Note (optional)" maxLength={500} />
-                    <button className="btn small" name="decision" value="approved">Approve</button>
-                    <button className="btn ghost small" name="decision" value="denied">Deny</button>
+                    <SubmitButton className="btn small" name="decision" value="approved">Approve</SubmitButton>
+                    <SubmitButton className="btn ghost small" name="decision" value="denied">Deny</SubmitButton>
                   </form>
                 ) : a.decision_note ? <><br /><span className="muted small">Note: {a.decision_note}</span></> : null}
               </li>
@@ -81,7 +82,7 @@ export default async function Internal() {
         {updates?.length ? <ul className="plainlist">{updates.map((u) => (
           <li key={u.update_id} className="row" style={{ justifyContent: 'space-between', padding: '0.4rem 0' }}>
             <span><b>{u.title}</b> <span className="muted small">· {u.kind} · {new Date(u.created_at).toLocaleDateString('en-GB')}</span></span>
-            <form action={removeUpdate}><input type="hidden" name="id" value={u.update_id} /><button className="btn ghost small">Remove</button></form>
+            <form action={removeUpdate}><input type="hidden" name="id" value={u.update_id} /><SubmitButton className="btn ghost small">Remove</SubmitButton></form>
           </li>))}</ul> : null}
       </div>
       <div className="card">
@@ -98,7 +99,7 @@ export default async function Internal() {
                       <select name="status" defaultValue={r.status} aria-label="Status">
                         <option value="open">open</option><option value="in_progress">in progress</option><option value="done">done</option><option value="declined">declined</option>
                       </select>
-                      <button className="btn ghost small">Save</button>
+                      <SubmitButton className="btn ghost small">Save</SubmitButton>
                     </form>
                   </td>
                 </tr>

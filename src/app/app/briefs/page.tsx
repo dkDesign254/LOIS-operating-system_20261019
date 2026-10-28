@@ -1,6 +1,7 @@
 import { getCtx } from '@/lib/session'
 import { BriefBuilder } from '@/components/brief-builder'
 import { saveMyBrief, deleteMyBrief } from './actions'
+import { SubmitButton } from '@/components/submit-button'
 
 export const metadata = { title: 'Decision briefs' }
 export const dynamic = 'force-dynamic'
@@ -22,7 +23,7 @@ export default async function Briefs() {
             {data.map((d) => (
               <li key={d.brief_id} className="row" style={{ justifyContent: 'space-between', padding: '0.5rem 0' }}>
                 <span><b>{d.title}</b><br /><span className="muted small">Score {d.score} · {new Date(d.created_at).toLocaleDateString('en-GB')}</span></span>
-                <form action={deleteMyBrief}><input type="hidden" name="id" value={d.brief_id} /><button className="btn ghost small">Delete</button></form>
+                <form action={deleteMyBrief}><input type="hidden" name="id" value={d.brief_id} /><SubmitButton className="btn ghost small">Delete</SubmitButton></form>
               </li>
             ))}
           </ul>

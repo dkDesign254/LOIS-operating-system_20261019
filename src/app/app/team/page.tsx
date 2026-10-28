@@ -1,6 +1,7 @@
 import { requireWorkspace } from '@/lib/session'
 import { ActionForm } from '@/components/forms'
 import { inviteMember, revokeInvite, setGrant } from '../actions'
+import { SubmitButton } from '@/components/submit-button'
 
 export const metadata = { title: 'Team' }
 
@@ -62,7 +63,7 @@ export default async function Team() {
                     <td>
                       <form action={revokeInvite}>
                         <input type="hidden" name="id" value={i.invitation_id} />
-                        <button className="btn ghost small">Cancel</button>
+                        <SubmitButton className="btn ghost small">Cancel</SubmitButton>
                       </form>
                     </td>
                   </tr>
@@ -118,7 +119,7 @@ export default async function Team() {
                               <option value="deny">Deny</option>
                             </select>
                             <input name="expires" type="date" aria-label="Until" />
-                            <button className="btn ghost small">Save</button>
+                            <SubmitButton className="btn ghost small">Save</SubmitButton>
                           </form>
                         </td>
                       </tr>

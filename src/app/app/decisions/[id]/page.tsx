@@ -5,6 +5,7 @@ import { llmEnabled } from '@/lib/llm'
 import { readiness, type Challenge } from '@/lib/readiness'
 import { Pill, fmt } from '@/components/ui'
 import { challengeBrief, generateBrief, generateHandoff, markChallenge, recordDecision, requestEvidence, saveEvidence, saveLearning, submitBrief } from '../../control-actions'
+import { SubmitButton } from '@/components/submit-button'
 
 export const metadata = { title: 'Decision brief' }
 
@@ -71,7 +72,7 @@ export default async function BriefPage({ params, searchParams }: { params: Prom
                 <div className="field"><label htmlFor="e2">Evidence date</label><input id="e2" type="date" name="evidence_date" defaultValue={b.evidence_date ?? ''} /></div>
                 <div className="field"><label htmlFor="e3">Source state</label><select id="e3" name="source_state" defaultValue={b.source_state ?? ''}><option value="">Not assessed</option><option value="validated">Validated</option><option value="unvalidated">Not validated</option></select></div>
               </div>
-              <div><button className="btn ghost small">Save evidence</button></div>
+              <div><SubmitButton className="btn ghost small">Save evidence</SubmitButton></div>
             </form>
           </details>
         )}
@@ -79,7 +80,7 @@ export default async function BriefPage({ params, searchParams }: { params: Prom
 
       {b.status === 'draft' && canDraft && (
         <section className="card row">
-          <form action={submitBrief}><input type="hidden" name="id" value={id} /><button className="btn">Submit for decision</button></form>
+          <form action={submitBrief}><input type="hidden" name="id" value={id} /><SubmitButton className="btn">Submit for decision</SubmitButton></form>
           <span className="muted small">This is a draft. Saving it did not request or imply approval.</span>
         </section>
       )}
@@ -87,8 +88,8 @@ export default async function BriefPage({ params, searchParams }: { params: Prom
       <section className="card">
         <h2>Brief</h2>
         <div className="row" style={{ marginBottom: 8 }}>
-          {canDraft && <form action={generateBrief}><input type="hidden" name="id" value={id} /><button className="btn" disabled={!llm}>{b.brief_text ? 'Regenerate brief' : 'Draft the brief'}</button></form>}
-          {canDraft && <form action={challengeBrief}><input type="hidden" name="id" value={id} /><button className="btn ghost" disabled={!llm || !b.brief_text}>Challenge this brief</button></form>}
+          {canDraft && <form action={generateBrief}><input type="hidden" name="id" value={id} /><SubmitButton className="btn" disabled={!llm}>{b.brief_text ? 'Regenerate brief' : 'Draft the brief'}</SubmitButton></form>}
+          {canDraft && <form action={challengeBrief}><input type="hidden" name="id" value={id} /><SubmitButton className="btn ghost" disabled={!llm || !b.brief_text}>Challenge this brief</SubmitButton></form>}
           <span className="muted small">{llm ? 'Generated drafts. LOIS advises. You decide.' : 'Generated drafts are off (no AI key set). You can still record a decision with your own reasoning.'}</span>
         </div>
         {b.brief_text && <div className="out">{b.brief_text}</div>}
@@ -121,7 +122,7 @@ export default async function BriefPage({ params, searchParams }: { params: Prom
               <div className="field"><label htmlFor="d">Due date</label><input id="d" type="date" name="due" /></div>
             </div>
             <div className="field"><label htmlFor="x">What is needed</label><input id="x" type="text" name="text" required minLength={4} maxLength={300} /></div>
-            <div className="row"><button className="btn ghost">Request evidence</button><span className="muted small">The decision stays visibly pending. A request is not a rejection.</span></div>
+            <div className="row"><SubmitButton className="btn ghost">Request evidence</SubmitButton><span className="muted small">The decision stays visibly pending. A request is not a rejection.</span></div>
           </form>
           {evs.data?.length ? <ul className="tight">{evs.data.map((r) => <li key={r.request_id}>{r.text} · owner {r.owner}{r.due ? ` · due ${r.due}` : ''} · {r.status}</li>)}</ul> : null}
         </section>
@@ -141,9 +142,9 @@ export default async function BriefPage({ params, searchParams }: { params: Prom
               <div className="field"><label htmlFor="ex">Expected outcome (optional, for the learning review)</label><input id="ex" type="text" name="expected" maxLength={400} /></div>
               {blocked && <div className="banner">High-risk request with no evidence. It cannot be approved until evidence is attached. You can still request evidence or reject.</div>}
               <div className="row">
-                <button className="btn" name="decision" value="approved" disabled={blocked}>Approve</button>
-                <button className="btn ghost" name="decision" value="needs_info">Ask for more</button>
-                <button className="btn ghost" name="decision" value="rejected">Reject</button>
+                <SubmitButton className="btn" name="decision" value="approved" disabled={blocked}>Approve</SubmitButton>
+                <SubmitButton className="btn ghost" name="decision" value="needs_info">Ask for more</SubmitButton>
+                <SubmitButton className="btn ghost" name="decision" value="rejected">Reject</SubmitButton>
               </div>
               <p className="muted small">Approving records your decision only. It cannot send, pay, publish or change anything.</p>
             </form>
@@ -156,7 +157,7 @@ export default async function BriefPage({ params, searchParams }: { params: Prom
       {b.status === 'approved' && (
         <section className="card">
           <h2>Execution handoff (preview)</h2>
-          <div className="row"><form action={generateHandoff}><input type="hidden" name="id" value={id} /><button className="btn ghost" disabled={!llm}>Preview the plan</button></form><Pill tone="warn">Awaiting explicit execution authorisation</Pill></div>
+          <div className="row"><form action={generateHandoff}><input type="hidden" name="id" value={id} /><SubmitButton className="btn ghost" disabled={!llm}>Preview the plan</SubmitButton></form><Pill tone="warn">Awaiting explicit execution authorisation</Pill></div>
           {b.handoff_text && <><div className="out" style={{ marginTop: 8 }}>{b.handoff_text}</div><p className="muted small">Preview only. Each external action needs its own authorisation, an idempotency key and a recorded result.</p></>}
           {b.outcome ? (
             <p style={{ marginTop: 12 }}><b>Outcome recorded:</b> {b.outcome}</p>
@@ -164,7 +165,7 @@ export default async function BriefPage({ params, searchParams }: { params: Prom
             <form action={saveLearning} className="stack" style={{ marginTop: 12 }}>
               <input type="hidden" name="id" value={id} />
               <div className="field"><label htmlFor="out">Learning review: what actually happened?</label><input id="out" type="text" name="outcome" required minLength={8} maxLength={500} placeholder="Observed result, and what to keep, correct or expire" /></div>
-              <div className="row"><button className="btn ghost small">Save learning</button><span className="muted small">Describe circumstances and reasoning. Do not judge individuals in hindsight.</span></div>
+              <div className="row"><SubmitButton className="btn ghost small">Save learning</SubmitButton><span className="muted small">Describe circumstances and reasoning. Do not judge individuals in hindsight.</span></div>
             </form>
           )}
         </section>

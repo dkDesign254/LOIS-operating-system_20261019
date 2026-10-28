@@ -20,9 +20,22 @@ const modes = [
   { name: 'Chain', text: 'One plans, one drafts, one checks. Each step sees what came before, so context is never lost.' },
 ]
 
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'LOIS Knowledge Layer',
+  applicationCategory: 'BusinessApplication',
+  description: 'Clarity for decision-makers: check whether a decision is ready, keep verified knowledge, and use every AI model from one place. A person always decides.',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: 'The Lucrebag' },
+}
+
+export const metadata = { alternates: { canonical: '/' } }
+
 export default function Home() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
       <header className="topbar sticky">
         <Link href="/" className="brand mono">
           LOIS<i />
@@ -162,7 +175,7 @@ export default function Home() {
       </section>
 
       <footer className="foot">
-        The Lucrebag · LOIS Knowledge Layer · <Link href="/resources">Guides</Link> · <Link href="/privacy">Privacy</Link>
+        The Lucrebag · LOIS Knowledge Layer · <Link href="/resources">Guides</Link> · <Link href="/privacy">Privacy</Link> · <Link href="/privacy#contact">Contact</Link>
       </footer>
     </>
   )
