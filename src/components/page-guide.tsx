@@ -19,6 +19,9 @@ const GUIDES: Record<string, G> = {
   '/app/integrations': { what: 'Connect other tools with API keys and signed webhooks. Works with n8n and Make.', doit: 'Create a key, copy it once, and test with the example call.', dont: 'Never share a key in chat or email. Revoke it if it leaks.' },
   '/app/team': { what: 'Invite people and control what each can do, service by service.', doit: 'Invite by email, choose a role, then fine-tune privileges where needed.', dont: 'Do not give admin to someone who only needs to ask questions.' },
   '/app/profile': { what: 'How LOIS talks to you: tone, answer length and your leaderboard choice.', doit: 'Set your tone and length, then save.', dont: 'Do not put sensitive details in free-text fields.' },
+  '/app/briefs': { what: 'Check whether a decision is ready: what is clear, what is missing, who should approve.', doit: 'Type the decision, the options and what you know. Save the brief.', dont: 'Do not paste sensitive documents. Name them instead.' },
+  '/app/briefing': { what: 'A short morning summary of what needs you, with where each line came from.', doit: 'Pick your time and days, then press Listen or read it.', dont: 'Do not treat it as advice. It only counts what is in your workspace.' },
+  '/app/access': { what: 'Ask the team that runs LOIS for access to their internal areas.', doit: 'Say what you need and why. A staff member replies.', dont: 'Do not expect access to open on its own. Every request is checked by a person.' },
   '/app/privacy': { what: 'What we hold about you and how to use your rights.', doit: 'Download your data, withdraw optional consent, or send a request.', dont: 'Nothing to avoid. We respond to requests within 30 days.' },
 }
 

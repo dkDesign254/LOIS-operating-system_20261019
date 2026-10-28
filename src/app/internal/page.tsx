@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getCtx } from '@/lib/session'
 import { MfaGate } from './mfa'
-import { setRequestStatus, extendTrial } from './actions'
+import { setRequestStatus, extendTrial, decideAccess, postUpdate, removeUpdate } from './actions'
 import { ActionForm } from '@/components/forms'
 
 export const metadata = { title: 'Staff console' }
@@ -17,17 +17,20 @@ export default async function Internal() {
       <div className="authwrap"><MfaGate hasFactor={aal?.nextLevel === 'aal2'} /></div>
     )
   }
-  const [{ data: ov }, { data: summary }, { data: reqs }] = await Promise.all([
+  const [{ data: ov }, { data: summary }, { data: reqs }, { data: access }, { data: internalTenants }, { data: updates }] = await Promise.all([
     ctx.sb.rpc('lois_staff_overview'),
     ctx.sb.rpc('lois_onboarding_summary'),
     ctx.sb.from('lois_data_requests').select('request_id, kind, status, user_email, note, created_at').order('created_at', { ascending: false }).limit(50),
+    ctx.sb.from('lois_access_requests').select('request_id, email, requested_role, reason, status, decision_note, granted_role, created_at').order('created_at', { ascending: false }).limit(30),
+    ctx.sb.from('lois_tenants').select('tenant_id, name').in('tenant_type', ['holding_company', 'business_arm']).order('name'),
+    ctx.sb.from('lois_updates').select('update_id, kind, title, created_at').order('created_at', { ascending: false }).limit(8),
   ])
   const o = (ov ?? {}) as { accounts?: number; workspaces?: number; internal_workspaces?: number; open_data_requests?: number; staff?: string[] }
   return (
     <div style={{ maxWidth: 980, margin: '0 auto', padding: '1.5rem 1.25rem 4rem' }} className="stack">
       <div className="row" style={{ justifyContent: 'space-between' }}>
         <h1 style={{ margin: 0 }}>Staff console</h1>
-        <Link className="btn ghost" href="/app">Back to LOIS</Link>
+        <span className="row"><Link className="btn ghost" href="/internal/vault">Vault</Link><Link className="btn ghost" href="/app">Back to LOIS</Link></span>
       </div>
       <p className="muted">Only allow-listed staff with a second factor can see this. Everything here is read from the database under its own rules, not from the app.</p>
       <div className="grid two">
@@ -35,6 +38,51 @@ export default async function Internal() {
         <div className="card"><p className="muted small">Workspaces ({o.internal_workspaces ?? 0} internal)</p><h2>{o.workspaces ?? 0}</h2></div>
         <div className="card"><p className="muted small">Open privacy requests</p><h2>{o.open_data_requests ?? 0}</h2></div>
         <div className="card"><p className="muted small">Staff (allow-list)</p><p className="small">{(o.staff ?? []).join(', ') || 'none'}</p></div>
+      </div>
+      <div className="card">
+        <h2>Internal access requests</h2>
+        <p className="muted small">New accounts only ever get their own customer workspace. People who need more ask here. Approve gives the chosen role in the chosen internal workspace; deny sends your note back.</p>
+        {access?.length ? (
+          <ul className="plainlist">
+            {access.map((a) => (
+              <li key={a.request_id} style={{ padding: '0.6rem 0', borderTop: '1px solid var(--line)' }}>
+                <b>{a.email}</b> <span className="muted small">· wants {a.requested_role} · {new Date(a.created_at).toLocaleDateString('en-GB')} · {a.status}</span>
+                <br /><span className="small">{a.reason}</span>
+                {a.status === 'pending' ? (
+                  <form action={decideAccess} className="row" style={{ marginTop: '0.5rem', flexWrap: 'wrap' }}>
+                    <input type="hidden" name="id" value={a.request_id} />
+                    <select name="tenant" aria-label="Workspace" defaultValue={internalTenants?.[0]?.tenant_id}>
+                      {(internalTenants ?? []).map((t) => <option key={t.tenant_id} value={t.tenant_id}>{t.name}</option>)}
+                    </select>
+                    <select name="role" aria-label="Role" defaultValue={a.requested_role}>
+                      <option value="viewer">viewer</option><option value="member">member</option><option value="reviewer">reviewer</option>
+                    </select>
+                    <input name="note" aria-label="Note" placeholder="Note (optional)" maxLength={500} />
+                    <button className="btn small" name="decision" value="approved">Approve</button>
+                    <button className="btn ghost small" name="decision" value="denied">Deny</button>
+                  </form>
+                ) : a.decision_note ? <><br /><span className="muted small">Note: {a.decision_note}</span></> : null}
+              </li>
+            ))}
+          </ul>
+        ) : <p className="muted">No requests.</p>}
+      </div>
+      <div className="card">
+        <h2>Post an update to the side panel</h2>
+        <p className="muted small">Shown to everyone in their right-hand panel: a LinkedIn post, a new framework, a system that works, or what people are doing with AI. Facts only, with a link to the source.</p>
+        <ActionForm action={postUpdate as never} submit="Post">
+          <div className="grid two">
+            <div><label htmlFor="uk">Kind</label><select id="uk" name="kind"><option value="linkedin">LinkedIn</option><option value="framework">Framework</option><option value="system">System</option><option value="ai">AI in practice</option></select></div>
+            <div><label htmlFor="ut">Title</label><input id="ut" name="title" required minLength={3} maxLength={140} /></div>
+          </div>
+          <label htmlFor="ub">Text</label><textarea id="ub" name="body" rows={3} required maxLength={600} />
+          <label htmlFor="ul">Link (https, optional)</label><input id="ul" name="link" type="url" />
+        </ActionForm>
+        {updates?.length ? <ul className="plainlist">{updates.map((u) => (
+          <li key={u.update_id} className="row" style={{ justifyContent: 'space-between', padding: '0.4rem 0' }}>
+            <span><b>{u.title}</b> <span className="muted small">· {u.kind} · {new Date(u.created_at).toLocaleDateString('en-GB')}</span></span>
+            <form action={removeUpdate}><input type="hidden" name="id" value={u.update_id} /><button className="btn ghost small">Remove</button></form>
+          </li>))}</ul> : null}
       </div>
       <div className="card">
         <h2>Privacy requests</h2>

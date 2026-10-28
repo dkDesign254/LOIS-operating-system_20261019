@@ -35,6 +35,10 @@ const nextConfig = {
         ],
       },
       {
+        source: '/(app|internal|api|auth|login)(.*)',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive, nosnippet, noimageindex, noai, noimageai' }],
+      },
+      {
         source: '/api/v1/(.*)',
         headers: [
           { key: 'LOIS-API-Version', value: '1' },

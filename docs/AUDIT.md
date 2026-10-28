@@ -1,4 +1,4 @@
-# LOIS feature audit — 25 Oct 2026 (updated late evening)
+# LOIS feature audit — 28 Oct 2026 (updated)
 
 Written against what Dustine Kibagendi asked for. "Done" means built, deployed and tested at least once. "Partial" and "Not yet" are stated plainly. Nothing here has been used by a stranger yet, so treat "Done" as "ready to be tested", not "proven".
 
@@ -24,6 +24,14 @@ Written against what Dustine Kibagendi asked for. "Done" means built, deployed a
 | 18 | Resource library of guides | Done | Public `/resources` with 8 guides and HowTo structured data; linked from the landing page and app menu | Add more guides as you learn what people ask. |
 | 19 | Borrow API keys from other projects | Declined on purpose | None | The repo is public and I never copy secrets between projects. Add keys in Vercel (see below). |
 | 20 | Neon analytics | Not connected | `db/neon/001_analytics.sql` | Run the file, set `NEON_DATABASE_URL`, redeploy. |
+| 21 | Try it without an account; USP (clarity for decision-makers) leads | Done, untested live | `/try`, `src/lib/brief.ts`, `brief-builder.tsx`, landing page buttons | Rule-based Decision Brief (four measures, gaps, questions, what would change the answer, who approves, draft message). Kept in the visitor's browser until they sign up, then saved to `lois_my_briefs` at `/app/briefs`. Unit tested (5). No AI cost. |
+| 22 | Vercel login still shown to new accounts | Fixed in code; one dashboard step left | `src/lib/site.ts` ignores a team-alias value in `NEXT_PUBLIC_SITE_URL`; middleware redirects alias to public address | Cannot be fully fixed from code: the Vercel gate runs before the app. Set Vercel Deployment Protection to Disabled (see below). Not changeable from my tools (Vercel connector returns 404 for this project). |
+| 23 | New users must not reach the internal side; admins grant more by RBAC | Done, tested as a real non-staff user | `lois_access_requests`, trigger `guard_internal_membership`, `lois_decide_access`, `/app/access`, `/internal` approvals | New accounts only get their own customer workspace. A direct insert into an internal workspace is blocked, self-approval is blocked, forged email is blocked. Only allow-listed staff with a second factor can approve, and only as viewer, member or reviewer in an internal workspace. Staff approve path itself was not run (needs an authenticator session). |
+| 24 | Jarvis-style daily briefing, voice and text, 09:40 Mon to Fri, adjustable, weekend choice | Done in phase 1, untested live | `/app/briefing`, `src/lib/briefing.ts`, `briefing-data.ts`, `lois_brief_prefs`, `lois_briefings` | Built from counts in the person's own workspace, each line with its source. No model writes it, so nothing is invented. Voice uses the browser's own voice. Prepared at the first open after the chosen time (free hosting cannot run a job at an exact minute; no service key to run one in the background). Weekend: off, ask or automatic. Tested (6). Not built: AI-written email and marketing drafts, linking social or work accounts, tone learned from past conversations beyond the profile tone. |
+| 25 | Right-hand panel for updates | Done | `UpdatesRail`, `lois_updates`, staff form in `/internal` | Shows today's briefing and staff-posted updates (LinkedIn, framework, system, AI in practice). Visible from 1280px wide; hidden on smaller screens where the briefing page serves the same purpose. |
+| 26 | Closed internal vault for methods and frameworks, second factor, owners and admins only | Done in the database; second hosting layer not done | `/internal/vault`, `lois_vault_items` (row-level security on `is_staff_mfa`), noindex, not searched by Ask LOIS | A copy in Google Drive was not made: that needs your decision on which folder and who gets it. |
+| 27 | Protect against AI crawlers, scraping, injection, abuse | Partial | `robots.ts`, `sitemap.ts`, `X-Robots-Tag` on private areas, crawler refusal in middleware, existing CSP, row-level security, daily quotas | Honest limit: robots rules and user-agent checks only stop well-behaved bots. Real protection is sign-in, row-level security and the staff second factor. No general per-IP rate limiter (in-memory limits do not work on serverless hosting). Public guides stay open on purpose. |
+| 28 | Link social and work accounts; borrow ChatGPT/Claude/Perplexity features by scraping | Not built / declined | none | Account linking needs each provider's approved app and keys. Scraping other products' features is not something I will do; the Studio already routes to the models directly. |
 
 ## Harvest from your repositories
 
@@ -39,7 +47,8 @@ Written against what Dustine Kibagendi asked for. "Done" means built, deployed a
 
 1. In Vercel, add `GOOGLE_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY` (optional `ANTHROPIC_API_KEY`) and `NEXT_PUBLIC_SITE_URL`, then redeploy.
 2. In Supabase, set the Site URL to `https://lois-operating-system20261019.vercel.app`, keep only that address and `http://localhost:3000/**` in redirect URLs, turn off or complete custom SMTP, enable TOTP and leaked-password protection.
-3. In Vercel, set Deployment Protection to Standard Protection.
+3. In Vercel: Project, Settings, Deployment Protection, set Vercel Authentication to Disabled for Production and Preview (the app has its own sign-in and row-level security). Then check Settings, Environment Variables: `NEXT_PUBLIC_SITE_URL` must be `https://lois-operating-system20261019.vercel.app`, not the `-dkdesign254s-projects` address. Redeploy.
+3b. In Supabase, Authentication, Email Templates: links must use `{{ .ConfirmationURL }}`. In URL Configuration remove every `-dkdesign254s-projects` entry. Anyone who already got a Vercel access request email can simply sign in at the public address; they were never given a workspace on the team address.
 4. Open the Knowledge bank and approve or reject the 69 pending entries.
 4b. Add `GOOGLE_API_KEY` to read scans and photos in Intake. Without it, PDFs with real text still work.
 5. Walk through `docs/SMOKE-TEST.md`.

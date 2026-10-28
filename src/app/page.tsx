@@ -28,6 +28,7 @@ export default function Home() {
           LOIS<i />
         </Link>
         <nav className="topnav mono" aria-label="Main">
+          <Link href="/try">Try it free</Link>
           <a href="#what">What it does</a>
           <a href="#studio">AI Studio</a>
           <a href="#trust">Trust</a>
@@ -50,9 +51,9 @@ export default function Home() {
             <Link className="btn" href="/login?mode=signup">
               Get started free
             </Link>
-            <a className="btn ghost" href="#start">
-              Find my starting point
-            </a>
+            <Link className="btn ghost" href="/try">
+              Try it without an account
+            </Link>
           </div>
         </div>
         <div className="hero2-art">
@@ -151,7 +152,10 @@ export default function Home() {
         <div className="sect">
           <h2 className="h-mono">Start with a question. Keep the decision.</h2>
           <p className="muted">Free workspaces include 50 questions a day. No card needed.</p>
-          <Link className="btn" href="/login?mode=signup">
+          <Link className="btn" href="/try">
+            Try it without an account
+          </Link>{' '}
+          <Link className="btn ghost" href="/login?mode=signup">
             Create your free account
           </Link>
         </div>

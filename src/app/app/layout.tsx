@@ -5,6 +5,7 @@ import { Icon } from '@/components/icons'
 import { PageGuide } from '@/components/page-guide'
 import { TrialBanner } from '@/components/trial-banner'
 import { AskLauncher } from '@/components/ask-launcher'
+import { UpdatesRail } from '@/components/updates-rail'
 import { getTrial } from '@/lib/trial'
 import { signOut, switchWorkspace } from './actions'
 
@@ -27,6 +28,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             ] as NavItem[])
           : []),
         { href: '/app', label: 'Ask LOIS', icon: 'chat' },
+        { href: '/app/briefing', label: 'Daily briefing', icon: 'spark' },
+        { href: '/app/briefs', label: 'Decision briefs', icon: 'note' },
         { href: '/app/knowledge', label: 'Knowledge base', icon: 'book' },
         { href: '/app/intake', label: 'Intake', icon: 'archive' },
         { href: '/app/bank', label: 'Knowledge bank', icon: 'shield' },
@@ -46,7 +49,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     : []
 
   return (
-    <div className="shell">
+    <div className={`shell${ctx.ws ? ' has-rail' : ''}`}>
       <aside className="side">
         <Link href="/app" className="brand">
           <i /> LOIS
@@ -90,6 +93,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <PageGuide />
         {children}
       </main>
+      {ctx.ws && <UpdatesRail ctx={ctx} />}
       {ctx.ws && <AskLauncher />}
     </div>
   )

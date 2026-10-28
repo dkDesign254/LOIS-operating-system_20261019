@@ -3,7 +3,16 @@ import { createServerClient } from '@supabase/ssr'
 import { SITE_URL, isTeamAlias } from '@/lib/site'
 
 // Refreshes the Supabase session cookie and keeps /app behind sign-in.
+// Known AI and bulk-scraping crawlers are refused on private areas. This is a courtesy layer: determined scrapers can fake
+// a browser, so the real protection is sign-in, row-level security and the staff second factor.
+const BOTS = /(GPTBot|ChatGPT-User|OAI-SearchBot|ClaudeBot|Claude-Web|anthropic-ai|CCBot|Google-Extended|PerplexityBot|Bytespider|Amazonbot|Applebot-Extended|cohere-ai|Meta-ExternalAgent|Diffbot|ImagesiftBot|Omgili|FacebookBot|python-requests|scrapy|HTTrack|wget|curl\/)/i
+
 export async function middleware(req: NextRequest) {
+  const path0 = req.nextUrl.pathname
+  if ((path0.startsWith('/app') || path0.startsWith('/internal') || (path0.startsWith('/api') && !path0.startsWith('/api/v1'))) && BOTS.test(req.headers.get('user-agent') ?? '')) {
+    return new NextResponse('Not available to automated crawlers.', { status: 403 })
+  }
+  if (path0.startsWith('/api')) return NextResponse.next()
   // If Supabase falls back to the Site URL (redirect URL not on its allow-list), the sign-in code arrives at the
   // homepage or /login. Hand it to the callback so the person still lands inside the app.
   const p = req.nextUrl.pathname
@@ -53,4 +62,4 @@ export async function middleware(req: NextRequest) {
   return res
 }
 
-export const config = { matcher: ['/', '/app/:path*', '/internal/:path*', '/login', '/start'] }
+export const config = { matcher: ['/', '/app/:path*', '/internal/:path*', '/login', '/start', '/api/:path*'] }

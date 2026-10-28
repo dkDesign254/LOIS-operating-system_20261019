@@ -1,5 +1,6 @@
 import { getCtx } from '@/lib/session'
 import { ActionForm } from '@/components/forms'
+import Link from 'next/link'
 import { saveProfile } from '../actions'
 
 export const metadata = { title: 'Profile' }
@@ -55,6 +56,11 @@ export default async function Profile() {
             <input type="checkbox" name="leaderboard_opt_in" defaultChecked={p?.leaderboard_opt_in ?? false} /> Show me on the leaderboard
           </label>
         </ActionForm>
+      </div>
+      <div className="card">
+        <h2>Work with the team behind LOIS?</h2>
+        <p className="muted">Your account only opens your own workspace. Staff areas are granted by a person, on request.</p>
+        <Link className="btn ghost" href="/app/access">Ask for team access</Link>
       </div>
     </div>
   )
