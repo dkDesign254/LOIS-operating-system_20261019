@@ -70,3 +70,5 @@ Written against what Dustine Kibagendi asked for. "Done" means built, deployed a
 | 33 | Personal right panel for everyone, adjustable, learning | Done: `lois_rail_prefs`, visit counter, rule-based "For you" (counts and votes, no AI), show/hide/order/collapse/width, 5-minute self-refresh, visible on all screen sizes. Unit tested (6) and database role tested. Not seen live |
 | 34 | Google first on sign-in; guest check on /try | Done 28-29 Oct. GitHub appears only when `NEXT_PUBLIC_OAUTH_PROVIDERS` lists it and Supabase has it enabled |
 | 35 | Self-analysis, round 2 (30 Oct) | LOIS's scanner found no structured data on /resources and /privacy and no contact link on /privacy. Fixed; all five public pages score 100 on all four measures. Review notes now show on the Accepted and Rejected tabs; source-link builder tested (3 tests, rejects `..` paths). 42 unit tests |
+| 36 | Version history for knowledge entries | Done (30 Oct): `/app/bank/history/[id]` walks back and forward through superseded versions; linked from the bank list and the review screen. Not run live; chain logic reads existing rows only (no new database objects) |
+

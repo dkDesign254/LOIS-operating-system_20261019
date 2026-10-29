@@ -79,6 +79,7 @@ export default async function Bank({ searchParams }: { searchParams: Promise<{ s
                   <span className="muted small">Accepting makes it searchable and awards points to the author.</span>
                 </div>
               )}
+              {(i.supersedes_id || i.status === 'superseded' || i.version > 1) && <Link className="small" href={`/app/bank/history/${i.knowledge_id}`}>Version history</Link>}
               {ctx.isReviewer && i.status === 'approved' && (
                 <form action={expireKnowledge}>
                   <input type="hidden" name="id" value={i.knowledge_id} />

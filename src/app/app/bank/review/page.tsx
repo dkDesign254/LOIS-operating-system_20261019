@@ -61,6 +61,7 @@ export default async function Review({ searchParams }: { searchParams: Promise<{
         <p style={{ whiteSpace: 'pre-wrap', marginTop: '0.8rem' }}>{e.content}</p>
         <p className="muted small">Added {new Date(e.created_at).toLocaleDateString('en-GB')}{e.metadata?.via ? ` · via ${e.metadata.via}` : ''}{e.supersedes_id ? ' · proposes a new version of an earlier entry' : ''}</p>
         {note && <p className="callout small">{note}</p>}
+        {e.supersedes_id && <p className="small"><Link href={`/app/bank/history/${e.knowledge_id}`}>Compare with the version this replaces</Link></p>}
       </article>
 
       <section className="card" aria-labelledby="src-h">
