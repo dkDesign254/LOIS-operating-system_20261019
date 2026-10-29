@@ -12,7 +12,7 @@ const REPOS: Record<string, string> = {
 
 export type SourceLink = { label: string; url: string | null; note?: string }
 
-const looksLikeFile = (p: string) => /^[\w@./\-]+$/.test(p) && (p.includes('/') || /\.\w{1,6}$/.test(p))
+const looksLikeFile = (p: string) => !p.split('/').includes('..') && /^[\w@./\-]+$/.test(p) && (p.includes('/') || /\.\w{1,6}$/.test(p))
 
 export function sourceLinks(raw: unknown): SourceLink[] {
   if (typeof raw !== 'string' || !raw.trim()) return []

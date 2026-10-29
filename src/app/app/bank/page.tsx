@@ -67,6 +67,7 @@ export default async function Bank({ searchParams }: { searchParams: Promise<{ s
                 <span className="chip">v{i.version}</span>
               </div>
               <p style={{ marginTop: '0.6rem', whiteSpace: 'pre-wrap' }}>{i.content}</p>
+              {i.metadata?.review?.note && <p className="callout small">Reviewer note: {i.metadata.review.note} <span className="muted">({i.metadata.review.by ?? 'reviewer'}, {new Date(i.metadata.review.at).toLocaleDateString('en-GB')})</span></p>}
               <p className="muted small">
                 {i.domain} · {new Date(i.created_at).toLocaleDateString('en-GB')}
                 {i.metadata?.via ? ` · via ${i.metadata.via}` : ''}

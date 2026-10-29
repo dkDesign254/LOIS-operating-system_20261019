@@ -1,12 +1,15 @@
 import Link from 'next/link'
 import { POLICY_VERSION } from '@/lib/policy'
+import { SITE_URL } from '@/lib/site'
 
 export const metadata = { title: 'Privacy notice', description: 'What LOIS collects, why, how long it is kept, and how to export, correct or delete your data.', alternates: { canonical: '/privacy' } }
 
 export default function Privacy() {
   return (
     <main className="legal" id="main">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebPage', name: 'LOIS privacy notice', url: `${SITE_URL}/privacy`, publisher: { '@type': 'Organization', name: 'The Lucrebag', address: { '@type': 'PostalAddress', addressLocality: 'Nairobi', addressCountry: 'KE' } } }) }} />
       <Link href="/" className="brand" style={{ color: 'var(--ink)' }}><i /> LOIS</Link>
+      <p className="small"><Link href="#contact">Contact us about your data</Link></p>
       <h1 style={{ marginTop: '1rem' }}>Privacy notice</h1>
       <p className="muted">Version {POLICY_VERSION}. LOIS is operated by The Lucrebag, Nairobi, Kenya. This notice is written to follow the Kenya Data Protection Act, 2019 and the principles of the GDPR (lawfulness, purpose limitation, minimisation, accuracy, storage limitation, security). It is a plain-language working draft and should be reviewed by a qualified lawyer before you rely on it as a legal document.</p>
 

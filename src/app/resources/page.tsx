@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { GUIDES } from '@/lib/guides'
+import { SITE_URL } from '@/lib/site'
 
 export const metadata = { title: 'Resources', description: 'Free practical guides on being found by AI agents, working with AI models, turning documents into trusted knowledge and keeping a person in charge of decisions.', alternates: { canonical: '/resources' } }
 
@@ -7,6 +8,7 @@ export default function Resources() {
   const topics = [...new Set(GUIDES.map((g) => g.topic))]
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'LOIS guides', url: `${SITE_URL}/resources`, hasPart: GUIDES.map((g) => ({ '@type': 'Article', headline: g.title, url: `${SITE_URL}/resources/${g.slug}` })) }) }} />
       <header className="topbar sticky">
         <Link href="/" className="brand mono">LOIS<i /></Link>
         <nav className="topnav mono" aria-label="Main"><Link href="/login">Sign in</Link><Link className="btn small" href="/login?mode=signup">Get started free</Link></nav>
