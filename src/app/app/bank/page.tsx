@@ -5,6 +5,7 @@ import { Icon } from '@/components/icons'
 import { expireKnowledge, submitKnowledge } from '../actions'
 import { ReviewButtons } from '@/components/review-buttons'
 import { SubmitButton } from '@/components/submit-button'
+import { IndexPanel } from '@/components/index-panel'
 
 export const metadata = { title: 'Knowledge bank' }
 
@@ -29,6 +30,13 @@ export default async function Bank({ searchParams }: { searchParams: Promise<{ s
     .order('created_at', { ascending: false })
     .limit(100)
 
+  const idx = ctx.isReviewer
+    ? await Promise.all([
+        ctx.sb.from('lois_knowledge_items').select('knowledge_id', { count: 'exact', head: true }).eq('tenant_id', ctx.ws.tenant_id).eq('status', 'approved'),
+        ctx.sb.from('lois_knowledge_items').select('knowledge_id', { count: 'exact', head: true }).eq('tenant_id', ctx.ws.tenant_id).eq('status', 'approved').is('embedding', null),
+      ])
+    : null
+
   return (
     <div className="stack">
       <div>
@@ -39,6 +47,7 @@ export default async function Bank({ searchParams }: { searchParams: Promise<{ s
       </div>
 
       {sp.error && <p className="err">{sp.error}</p>}
+      {idx && (idx[0].count ?? 0) > 0 && <IndexPanel total={idx[0].count ?? 0} missing={idx[1].count ?? 0} />}
       {ctx.isReviewer && status === 'pending_review' && items && items.length > 0 && (
         <div className="callout row" style={{ justifyContent: 'space-between' }}>
           <span><b>{items.length}</b> waiting. Read them one at a time with their sources.</span>

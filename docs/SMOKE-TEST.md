@@ -1,4 +1,4 @@
-# LOIS smoke test (27 steps)
+# LOIS smoke test (28 steps)
 
 Prepared for Dustine Kibagendi, The Lucrebag. Run in a private window after each deploy. Tick each line; send anything that differs from "Expect" to Claude with a screenshot.
 
@@ -31,3 +31,4 @@ Prepared for Dustine Kibagendi, The Lucrebag. Run in a private window after each
 | 25 | Reject without a note, then with a note; then Accept the next | First is refused with a reason prompt; each decision shows a confirmation and opens the next entry; the counter drops; Accepted tab shows it with your note kept |
 | 26 | Any signed-in page at any width: open My panel, Customise, hide Updates, move Today up, tick Wider, reload | Choices persist for you only; "Not useful" on a suggestion hides it; the panel refreshes itself every 5 minutes |
 | 27 | Propose a correction to an accepted entry (paste its ID in Supersedes), accept it, open Version history | Both versions listed, newest first, old one marked superseded |
+| 28 | Knowledge bank: read the Search index line, press Index now (repeat until none left) | Count of indexed entries rises to all accepted; or an exact error is shown (send it to Claude) |

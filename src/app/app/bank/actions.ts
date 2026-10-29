@@ -48,3 +48,17 @@ export async function decideAndNext(decision: string, fd: FormData) {
   revalidatePath('/app', 'layout')
   go(next, '&saved=' + decision)
 }
+
+export type IndexState = { ok?: boolean; message?: string; error?: string } | null
+
+/** Rebuilds the search index for accepted entries and says plainly what happened. */
+export async function rebuildIndex(_: IndexState): Promise<IndexState> {
+  const ctx = await requireWorkspace()
+  if (!ctx.isReviewer) return { error: 'Only reviewers, admins and owners can do this.' }
+  const { indexReport } = await import('@/lib/embed')
+  const r = await indexReport(ctx.sb, ctx.ws.tenant_id)
+  const { count } = await ctx.sb.from('lois_knowledge_items').select('knowledge_id', { count: 'exact', head: true }).eq('tenant_id', ctx.ws.tenant_id).eq('status', 'approved').is('embedding', null)
+  revalidatePath('/app/bank')
+  if (r.error) return { error: `${r.error}. Indexed ${r.done} this time; ${count ?? '?'} still waiting. Answers still work, using word search instead of meaning search.` }
+  return { ok: true, message: `Indexed ${r.done}. ${count ?? 0} still waiting${count ? ', press again to continue' : '. Meaning search now covers every accepted entry'}.` }
+}
