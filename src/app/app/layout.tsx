@@ -7,6 +7,7 @@ import { TrialBanner } from '@/components/trial-banner'
 import { AskLauncher } from '@/components/ask-launcher'
 import { UpdatesRail } from '@/components/updates-rail'
 import { getTrial } from '@/lib/trial'
+import { loadRail } from '@/lib/rail-data'
 import { signOut, switchWorkspace } from './actions'
 
 export const dynamic = 'force-dynamic'
@@ -14,6 +15,7 @@ export const dynamic = 'force-dynamic'
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const ctx = await getCtx()
   const trial = ctx.ws ? await getTrial(ctx.sb, ctx.isInternal) : null
+  const rail = ctx.ws ? (await loadRail(ctx)).layout : null
 
   const items: NavItem[] = ctx.ws
     ? [
@@ -49,7 +51,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     : []
 
   return (
-    <div className={`shell${ctx.ws ? ' has-rail' : ''}`}>
+    <div className={`shell${ctx.ws ? ' has-rail' : ''}${rail && !rail.open ? ' rail-closed' : ''}${rail?.wide ? ' rail-wide' : ''}`}>
       <aside className="side">
         <Link href="/app" className="brand">
           <i /> LOIS
@@ -93,7 +95,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <PageGuide />
         {children}
       </main>
-      {ctx.ws && <UpdatesRail ctx={ctx} />}
+      {ctx.ws && <UpdatesRail ctx={ctx} trial={trial} />}
       {ctx.ws && <AskLauncher />}
     </div>
   )

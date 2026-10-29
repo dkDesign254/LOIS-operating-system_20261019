@@ -61,3 +61,7 @@ Written against what Dustine Kibagendi asked for. "Done" means built, deployed a
 - The Law Lab look is an inspiration, not a copy: different layout, text, colours tuned to LOIS, and original drawings.
 - "Qualified entity processes your context" exists today as sending a question to a human reviewer. A directory of qualified people or firms does not exist yet.
 - Free-tier model quotas can run out. Auto mode hands off when a provider refuses, but cannot create capacity.
+| 32 | Review queue: read sources, decide, move on | Done (KB-021 era, 29 Oct): `/app/bank/review`, source links, related entries, reject needs a reason, auto-advance, skip. Database decision path tested as reviewer. Not run live |
+| 33 | Personal right panel for everyone, adjustable, learning | Done: `lois_rail_prefs`, visit counter, rule-based "For you" (counts and votes, no AI), show/hide/order/collapse/width, 5-minute self-refresh, visible on all screen sizes. Unit tested (6) and database role tested. Not seen live |
+| 34 | Google first on sign-in; guest check on /try | Done 28-29 Oct. GitHub appears only when `NEXT_PUBLIC_OAUTH_PROVIDERS` lists it and Supabase has it enabled |
+

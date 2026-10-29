@@ -1,4 +1,4 @@
-# LOIS smoke test (23 steps)
+# LOIS smoke test (26 steps)
 
 Prepared for Dustine Kibagendi, The Lucrebag. Run in a private window after each deploy. Tick each line; send anything that differs from "Expect" to Claude with a screenshot.
 
@@ -27,3 +27,6 @@ Prepared for Dustine Kibagendi, The Lucrebag. Run in a private window after each
 | 21 | Sign in as dustinekibagendi.hpgk@gmail.com, open Knowledge bank, press Accept on one entry and Reject on another | The queue shows the pending entries; each press shows "Accepted" or "Rejected" and the entry moves tab |
 | 22 | Signed out, open `/login` | Google button is first and filled; "Try it without an account" link is under it. No Vercel option anywhere |
 | 23 | Signed out, `/try`, enter example.com under "Check a website" | Four scores and up to three fixes; a 6th check within an hour is refused politely; `localhost` is refused |
+| 24 | As a reviewer: Knowledge bank, press "Start reviewing" | Entry 1 of N with its text, source links (open in a new tab), related entries and a note box |
+| 25 | Reject without a note, then with a note; then Accept the next | First is refused with a reason prompt; each decision shows a confirmation and opens the next entry; the counter drops; Accepted tab shows it with your note kept |
+| 26 | Any signed-in page at any width: open My panel, Customise, hide Updates, move Today up, tick Wider, reload | Choices persist for you only; "Not useful" on a suggestion hides it; the panel refreshes itself every 5 minutes |

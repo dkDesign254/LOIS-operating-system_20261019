@@ -39,6 +39,12 @@ export default async function Bank({ searchParams }: { searchParams: Promise<{ s
       </div>
 
       {sp.error && <p className="err">{sp.error}</p>}
+      {ctx.isReviewer && status === 'pending_review' && items && items.length > 0 && (
+        <div className="callout row" style={{ justifyContent: 'space-between' }}>
+          <span><b>{items.length}</b> waiting. Read them one at a time with their sources.</span>
+          <Link className="btn" href="/app/bank/review">Start reviewing</Link>
+        </div>
+      )}
 
       <div className="tabs" role="tablist">
         {TABS.map((t) => (
@@ -68,6 +74,7 @@ export default async function Bank({ searchParams }: { searchParams: Promise<{ s
               {ctx.isReviewer && i.status === 'pending_review' && (
                 <div className="row">
                   <ReviewButtons id={i.knowledge_id} />
+                  <Link className="small" href={`/app/bank/review?id=${i.knowledge_id}`}>Read sources and decide</Link>
                   <span className="muted small">Accepting makes it searchable and awards points to the author.</span>
                 </div>
               )}
