@@ -15,10 +15,9 @@ async function pendingIds(ctx: Awaited<ReturnType<typeof requireWorkspace>>) {
 }
 
 /** Accept, reject or skip one entry, then open the next one waiting. The decision is saved first; extras never undo it. */
-export async function decideAndNext(fd: FormData) {
+export async function decideAndNext(decision: string, fd: FormData) {
   const ctx = await requireWorkspace()
   const id = String(fd.get('id') ?? '').slice(0, 64)
-  const decision = String(fd.get('decision') ?? '')
   const note = String(fd.get('note') ?? '').trim().slice(0, 1000)
   if (!ctx.isReviewer) redirect('/app/bank')
 

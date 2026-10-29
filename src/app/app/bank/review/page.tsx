@@ -46,7 +46,7 @@ export default async function Review({ searchParams }: { searchParams: Promise<{
       <div>
         <h1>Review queue</h1>
         <p className="muted">Read the entry and its sources, then accept, reject or skip. The next one opens by itself.</p>
-        <div className="meter" role="progressbar" aria-label="Queue position" aria-valuemin={1} aria-valuemax={ids.length} aria-valuenow={pos + 1}><span style={{ width: `${((pos + 1) / ids.length) * 100}%` }} /></div>
+        <div className="meter" role="progressbar" aria-label="Queue position" aria-valuemin={1} aria-valuemax={ids.length} aria-valuenow={pos + 1}><i style={{ width: `${((pos + 1) / ids.length) * 100}%` }} /></div>
         <p className="small mono">Entry {pos + 1} of {ids.length} waiting</p>
       </div>
       {banner}
@@ -74,7 +74,7 @@ export default async function Review({ searchParams }: { searchParams: Promise<{
               </li>
             ))}
           </ul>
-        ) : <p className="muted small">No source is recorded for this entry. Consider asking the author before accepting.</p>}
+        ) : <p className="muted small">{e.metadata?.via === 'seed' ? 'This is a starting entry written for the workspace; it has no outside source. Judge it against what you know about the company.' : 'No source is recorded for this entry. Consider asking the author before accepting.'}</p>}
         {links.some((l) => l.url) && <p className="muted small">Most source repositories are private. If GitHub says &quot;not found&quot;, sign in to GitHub as dkDesign254 first.</p>}
         {related && related.length > 0 && (
           <>
@@ -90,15 +90,15 @@ export default async function Review({ searchParams }: { searchParams: Promise<{
         )}
       </section>
 
-      <form action={decideAndNext} className="card" aria-labelledby="d-h">
+      <form className="card" aria-labelledby="d-h">
         <h3 id="d-h" className="mono">Your decision</h3>
         <input type="hidden" name="id" value={id} />
         <label htmlFor="note">Note (needed to reject; helpful when accepting)</label>
         <textarea id="note" name="note" maxLength={1000} rows={3} />
         <div className="row" style={{ marginTop: '0.8rem', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <SubmitButton className="btn" name="decision" value="approved" pendingText="Saving…">Accept</SubmitButton>
-          <SubmitButton className="btn ghost" name="decision" value="rejected" pendingText="Saving…">Reject</SubmitButton>
-          <SubmitButton className="btn ghost" name="decision" value="skip" pendingText="Opening…">Skip for now</SubmitButton>
+          <SubmitButton className="btn" formAction={decideAndNext.bind(null, 'approved')} pendingText="Saving…">Accept</SubmitButton>
+          <SubmitButton className="btn ghost" formAction={decideAndNext.bind(null, 'rejected')} pendingText="Saving…">Reject</SubmitButton>
+          <SubmitButton className="btn ghost" formAction={decideAndNext.bind(null, 'skip')} pendingText="Opening…">Skip for now</SubmitButton>
         </div>
         <p className="muted small">Accepting makes it searchable and awards points to the author. Rejecting keeps it on record and read-only.</p>
       </form>
