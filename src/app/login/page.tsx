@@ -6,7 +6,8 @@ import { supabaseBrowser } from '@/lib/supabase/client'
 import { friendlyAuthError } from '@/lib/policy'
 import { SITE_URL } from '@/lib/site'
 
-const OAUTH = (process.env.NEXT_PUBLIC_OAUTH_PROVIDERS ?? '').split(',').map((s) => s.trim()).filter(Boolean) as ('google' | 'github')[]
+// Google is always offered. NEXT_PUBLIC_OAUTH_PROVIDERS can add more (for example github) but cannot remove Google.
+const OAUTH = Array.from(new Set(['google', ...(process.env.NEXT_PUBLIC_OAUTH_PROVIDERS ?? '').split(',')])).map((s) => s.trim()).filter(Boolean) as ('google' | 'github')[]
 
 function safeNext(n: string | null) {
   return n && n.startsWith('/') && !n.startsWith('//') ? n : '/app'
@@ -116,12 +117,13 @@ function Form() {
           <>
             <div className="stack" style={{ marginTop: '0.75rem' }}>
               {OAUTH.map((p) => (
-                <button key={p} type="button" className="btn ghost" style={{ width: '100%', justifyContent: 'center' }} onClick={() => oauth(p)}>
+                <button key={p} type="button" className={p === 'google' ? 'btn' : 'btn ghost'} style={{ width: '100%', justifyContent: 'center' }} onClick={() => oauth(p)}>
                   Continue with {p === 'google' ? 'Google' : 'GitHub'}
                 </button>
               ))}
             </div>
-            <p className="muted small" style={{ textAlign: 'center', margin: '0.75rem 0 0' }}>or use your email</p>
+            <p className="small" style={{ textAlign: 'center', margin: '0.75rem 0 0' }}><Link href="/try">Just looking? Try it without an account</Link></p>
+            <p className="muted small" style={{ textAlign: 'center', margin: '0.5rem 0 0' }}>or use your email</p>
           </>
         )}
 

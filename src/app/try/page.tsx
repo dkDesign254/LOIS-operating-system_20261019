@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { BriefBuilder } from '@/components/brief-builder'
+import { GuestSiteCheck } from '@/components/guest-site-check'
 import { SITE_URL } from '@/lib/site'
 
 export const metadata = {
@@ -40,7 +41,7 @@ export default function Try() {
         <nav className="topnav mono" aria-label="Main">
           <Link href="/resources">Guides</Link>
           <Link href="/login">Sign in</Link>
-          <Link className="btn small" href="/login?mode=signup">Create free account</Link>
+          <Link className="btn small" href="/login?mode=signup">Continue with Google</Link>
         </nav>
       </header>
       <main id="main" className="sect" style={{ maxWidth: 820, margin: '0 auto' }}>
@@ -50,6 +51,7 @@ export default function Try() {
         <h2 className="h-mono" style={{ fontSize: '1.1rem' }}>How it works</h2>
         <ol className="steps">{how.map((h) => <li key={h.t}><b className="mono">{h.t}</b> <span className="muted">{h.d}</span></li>)}</ol>
         <BriefBuilder mode="guest" />
+        <GuestSiteCheck />
         <section style={{ marginTop: '3rem' }}>
           <p className="marker mono">§ AND THEN, IN YOUR WORKSPACE</p>
           <ul className="rows plain">

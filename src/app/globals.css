@@ -321,3 +321,5 @@ html { scroll-behavior: smooth; }
   .rail { display: block; position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 2rem 1.25rem 2rem 0 }
   .rail-card { border: 1px solid var(--blue-line); background: #fff; border-radius: 14px; padding: 1rem; margin-bottom: 1rem }
 }
+
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}

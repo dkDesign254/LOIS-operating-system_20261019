@@ -1,4 +1,4 @@
-# LOIS smoke test (21 steps)
+# LOIS smoke test (23 steps)
 
 Prepared for Dustine Kibagendi, The Lucrebag. Run in a private window after each deploy. Tick each line; send anything that differs from "Expect" to Claude with a screenshot.
 
@@ -25,3 +25,5 @@ Prepared for Dustine Kibagendi, The Lucrebag. Run in a private window after each
 | 19 | Open `/robots.txt` and `/sitemap.xml` | `/app`, `/internal`, `/api` are disallowed; `/try` and guides listed |
 | 20 | Open the `-dkdesign254s-projects` address after turning Protection off | It redirects to the public address, no Vercel login |
 | 21 | Sign in as dustinekibagendi.hpgk@gmail.com, open Knowledge bank, press Accept on one entry and Reject on another | The queue shows the pending entries; each press shows "Accepted" or "Rejected" and the entry moves tab |
+| 22 | Signed out, open `/login` | Google button is first and filled; "Try it without an account" link is under it. No Vercel option anywhere |
+| 23 | Signed out, `/try`, enter example.com under "Check a website" | Four scores and up to three fixes; a 6th check within an hour is refused politely; `localhost` is refused |
