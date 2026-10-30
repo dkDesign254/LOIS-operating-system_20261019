@@ -77,3 +77,11 @@ export async function deleteVaultItem(fd: FormData) {
   await ctx.sb.from('lois_vault_items').delete().eq('item_id', String(fd.get('id') ?? ''))
   revalidatePath('/internal/vault')
 }
+
+export async function setRunLimits(_: ExtendState, fd: FormData): Promise<ExtendState> {
+  const ctx = await getCtx()
+  if (!ctx.isStaff) return { error: 'Not allowed.' }
+  const { error } = await ctx.sb.rpc('lois_set_limits', { p_tenant: String(fd.get('tenant') ?? ''), p_test: Number(fd.get('test')), p_live: Number(fd.get('live')), p_note: String(fd.get('note') ?? '').slice(0, 200) })
+  if (error) return { error: error.message.includes('not allowed') ? 'Needs staff sign-in with the second factor.' : error.message }
+  return { message: 'Allowance saved and logged.' }
+}

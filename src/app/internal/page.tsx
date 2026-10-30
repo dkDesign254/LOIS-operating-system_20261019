@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getCtx } from '@/lib/session'
 import { MfaGate } from './mfa'
-import { setRequestStatus, extendTrial, decideAccess, postUpdate, removeUpdate } from './actions'
+import { setRequestStatus, extendTrial, setRunLimits, decideAccess, postUpdate, removeUpdate } from './actions'
 import { ActionForm } from '@/components/forms'
 import { SubmitButton } from '@/components/submit-button'
 
@@ -18,13 +18,14 @@ export default async function Internal() {
       <div className="authwrap"><MfaGate hasFactor={aal?.nextLevel === 'aal2'} /></div>
     )
   }
-  const [{ data: ov }, { data: summary }, { data: reqs }, { data: access }, { data: internalTenants }, { data: updates }] = await Promise.all([
+  const [{ data: ov }, { data: summary }, { data: reqs }, { data: access }, { data: internalTenants }, { data: updates }, { data: clientTenants }] = await Promise.all([
     ctx.sb.rpc('lois_staff_overview'),
     ctx.sb.rpc('lois_onboarding_summary'),
     ctx.sb.from('lois_data_requests').select('request_id, kind, status, user_email, note, created_at').order('created_at', { ascending: false }).limit(50),
     ctx.sb.from('lois_access_requests').select('request_id, email, requested_role, reason, status, decision_note, granted_role, created_at').order('created_at', { ascending: false }).limit(30),
     ctx.sb.from('lois_tenants').select('tenant_id, name').in('tenant_type', ['holding_company', 'business_arm']).order('name'),
     ctx.sb.from('lois_updates').select('update_id, kind, title, created_at').order('created_at', { ascending: false }).limit(8),
+    ctx.sb.from('lois_tenants').select('tenant_id, name, tenant_type, plan').eq('tenant_type', 'client').order('name').limit(200),
   ])
   const o = (ov ?? {}) as { accounts?: number; workspaces?: number; internal_workspaces?: number; open_data_requests?: number; staff?: string[] }
   return (
@@ -116,6 +117,19 @@ export default async function Internal() {
             <div><label htmlFor="td">Days (1 to 90)</label><input id="td" name="days" type="number" min={1} max={90} defaultValue={14} required /></div>
           </div>
           <label htmlFor="tn">Note (optional)</label><input id="tn" name="note" maxLength={200} />
+        </ActionForm>
+      </div>
+      <div className="card">
+        <h2>Daily run allowance for a customer workspace</h2>
+        <p className="muted small">What a subscription changes. Defaults: 10 test runs and 3 live runs a day. Every change is logged with your name.</p>
+        <ActionForm action={setRunLimits as never} submit="Save allowance">
+          <label htmlFor="rt">Workspace</label>
+          <select id="rt" name="tenant">{(clientTenants ?? []).map((t) => <option key={t.tenant_id} value={t.tenant_id}>{t.name} ({t.plan})</option>)}</select>
+          <div className="grid two">
+            <div><label htmlFor="rtest">Test runs per day</label><input id="rtest" name="test" type="number" min={0} max={100000} defaultValue={10} required /></div>
+            <div><label htmlFor="rlive">Live runs per day</label><input id="rlive" name="live" type="number" min={0} max={100000} defaultValue={3} required /></div>
+          </div>
+          <label htmlFor="rn">Reason (for example: Starter plan paid, invoice 123)</label><input id="rn" name="note" maxLength={200} />
         </ActionForm>
       </div>
       <div className="card">

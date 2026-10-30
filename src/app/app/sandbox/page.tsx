@@ -17,6 +17,7 @@ export default async function Sandbox() {
     <div className="stack">
       <div className="tabs">
         <Link href="/app/sandbox" aria-current="page">Dry run and tools</Link>
+        <Link href="/app/sandbox/hub">Use case hub</Link>
         <Link href="/app/sandbox/studio">AI Studio</Link>
       </div>
       <div>

@@ -4,7 +4,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 type Target = { webhook_id: string; url: string; signature: string }
 
 /** Blocks obvious internal targets. Webhook URLs are admin-supplied and fetched server-side. */
-function allowed(raw: string): boolean {
+export function allowed(raw: string): boolean {
   try {
     const u = new URL(raw)
     if (u.protocol !== 'https:') return false
