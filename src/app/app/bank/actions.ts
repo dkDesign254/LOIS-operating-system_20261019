@@ -57,7 +57,8 @@ export async function rebuildIndex(_: IndexState): Promise<IndexState> {
   if (!ctx.isReviewer) return { error: 'Only reviewers, admins and owners can do this.' }
   const { indexReport } = await import('@/lib/embed')
   const r = await indexReport(ctx.sb, ctx.ws.tenant_id)
-  const { count } = await ctx.sb.from('lois_knowledge_items').select('knowledge_id', { count: 'exact', head: true }).eq('tenant_id', ctx.ws.tenant_id).eq('status', 'approved').is('embedding', null)
+  const { data: gaps } = await ctx.sb.rpc('lois_embedding_gaps', { p_tenant: ctx.ws.tenant_id, p_limit: 50 })
+  const count = ((gaps ?? []) as { source_kind: string }[]).filter((g) => g.source_kind === 'bank').length
   revalidatePath('/app/bank')
   if (r.error) return { error: `${r.error}. Indexed ${r.done} this time; ${count ?? '?'} still waiting. Answers still work, using word search instead of meaning search.` }
   return { ok: true, message: `Indexed ${r.done}. ${count ?? 0} still waiting${count ? ', press again to continue' : '. Meaning search now covers every accepted entry'}.` }

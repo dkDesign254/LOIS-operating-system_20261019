@@ -30,6 +30,7 @@ export default async function Review({ searchParams }: { searchParams: Promise<{
   const { data: e } = await ctx.sb.from('lois_knowledge_items').select('knowledge_id,title,content,domain,evidence_label,version,created_by,created_at,metadata,supersedes_id').eq('knowledge_id', id).single()
   if (!e) redirect(R0)
   const links = sourceLinks(e.metadata?.source_repo_path)
+  const web = ((e.metadata?.web_sources ?? []) as { title: string; url: string }[]).filter((w) => typeof w.url === 'string' && w.url.startsWith('https://'))
   const { data: related } = await ctx.sb
     .from('lois_knowledge_items')
     .select('knowledge_id,title,status')
@@ -75,7 +76,8 @@ export default async function Review({ searchParams }: { searchParams: Promise<{
               </li>
             ))}
           </ul>
-        ) : <p className="muted small">{e.metadata?.via === 'seed' ? 'This is a starting entry written for the workspace; it has no outside source. Judge it against what you know about the company.' : 'No source is recorded for this entry. Consider asking the author before accepting.'}</p>}
+        ) : web.length ? null : <p className="muted small">{e.metadata?.via === 'seed' ? 'This is a starting entry written for the workspace; it has no outside source. Judge it against what you know about the company.' : 'No source is recorded for this entry. Consider asking the author before accepting.'}</p>}
+        {web.length > 0 && <ul className="plainlist">{web.map((w) => <li key={w.url}><a href={w.url} target="_blank" rel="noopener noreferrer">{w.title}<span className="sr-only"> (opens in a new tab)</span></a></li>)}</ul>}
         {links.some((l) => l.url) && <p className="muted small">Most source repositories are private. If GitHub says &quot;not found&quot;, sign in to GitHub as dkDesign254 first.</p>}
         {related && related.length > 0 && (
           <>

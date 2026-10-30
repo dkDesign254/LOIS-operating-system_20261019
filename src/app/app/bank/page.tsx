@@ -30,12 +30,14 @@ export default async function Bank({ searchParams }: { searchParams: Promise<{ s
     .order('created_at', { ascending: false })
     .limit(100)
 
+  // Embeddings live in lois_embeddings, not on the entry, so the gaps function is the truthful source.
   const idx = ctx.isReviewer
     ? await Promise.all([
         ctx.sb.from('lois_knowledge_items').select('knowledge_id', { count: 'exact', head: true }).eq('tenant_id', ctx.ws.tenant_id).eq('status', 'approved'),
-        ctx.sb.from('lois_knowledge_items').select('knowledge_id', { count: 'exact', head: true }).eq('tenant_id', ctx.ws.tenant_id).eq('status', 'approved').is('embedding', null),
+        ctx.sb.rpc('lois_embedding_gaps', { p_tenant: ctx.ws.tenant_id, p_limit: 50 }),
       ])
     : null
+  const gapCount = idx ? ((idx[1].data ?? []) as { source_kind: string }[]).filter((g) => g.source_kind === 'bank').length : 0
 
   return (
     <div className="stack">
@@ -47,7 +49,7 @@ export default async function Bank({ searchParams }: { searchParams: Promise<{ s
       </div>
 
       {sp.error && <p className="err">{sp.error}</p>}
-      {idx && (idx[0].count ?? 0) > 0 && <IndexPanel total={idx[0].count ?? 0} missing={idx[1].count ?? 0} />}
+      {idx && (idx[0].count ?? 0) > 0 && <IndexPanel total={idx[0].count ?? 0} missing={gapCount} />}
       {ctx.isReviewer && status === 'pending_review' && items && items.length > 0 && (
         <div className="callout row" style={{ justifyContent: 'space-between' }}>
           <span><b>{items.length}</b> waiting. Read them one at a time with their sources.</span>

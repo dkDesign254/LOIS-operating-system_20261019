@@ -1,4 +1,4 @@
-# LOIS smoke test (28 steps)
+# LOIS smoke test (30 steps)
 
 Prepared for Dustine Kibagendi, The Lucrebag. Run in a private window after each deploy. Tick each line; send anything that differs from "Expect" to Claude with a screenshot.
 
@@ -32,3 +32,5 @@ Prepared for Dustine Kibagendi, The Lucrebag. Run in a private window after each
 | 26 | Any signed-in page at any width: open My panel, Customise, hide Updates, move Today up, tick Wider, reload | Choices persist for you only; "Not useful" on a suggestion hides it; the panel refreshes itself every 5 minutes |
 | 27 | Propose a correction to an accepted entry (paste its ID in Supersedes), accept it, open Version history | Both versions listed, newest first, old one marked superseded |
 | 28 | Knowledge bank: read the Search index line, press Index now (repeat until none left) | Count of indexed entries rises to all accepted; or an exact error is shown (send it to Claude) |
+| 29 | As owner/admin open Insights; switch 7/30/90 days; as a member try `/app/insights` | Tiles, chart, models, bank breakdown; member gets a 404 |
+| 30 | Web research: ask a current question, open two sources, Propose to the Knowledge bank | Findings with sources; the entry appears in the review queue with the web links |
