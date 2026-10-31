@@ -1,0 +1,14 @@
+create schema auth; create schema lois_private;
+create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claims', true)::json ->> 'sub','')::uuid $$;
+create function auth.jwt() returns jsonb language sql stable as $$ select coalesce(nullif(current_setting('request.jwt.claims', true),'')::jsonb,'{}') $$;
+create table public.lois_tenants(tenant_id uuid primary key default gen_random_uuid(), name text not null, plan text default 'free');
+create table public.lois_memberships(tenant_id uuid references public.lois_tenants, user_id uuid, role text, primary key(tenant_id,user_id));
+create table public.lois_admin_log(log_id bigint generated always as identity primary key, tenant_id uuid not null, actor uuid not null, actor_email text, action text not null, detail jsonb not null default '{}', at timestamptz not null default now());
+create function lois_private.is_member(t uuid) returns boolean language sql stable security definer as $$ select exists(select 1 from public.lois_memberships where tenant_id=t and user_id=auth.uid()) $$;
+create function lois_private.has_role(t uuid, r text[]) returns boolean language sql stable security definer as $$ select exists(select 1 from public.lois_memberships where tenant_id=t and user_id=auth.uid() and role=any(r)) $$;
+grant usage on schema public, lois_private, auth to anon, authenticated;
+grant select, insert, update, delete on all tables in schema public to authenticated; grant select on all tables in schema public to anon;
+grant execute on all functions in schema lois_private, auth to anon, authenticated;
+alter default privileges in schema public grant select, insert, update, delete on tables to authenticated;
+insert into public.lois_tenants(tenant_id,name) values ('25eaaebe-4b1e-4d87-b53a-b0f459b4db0a','Test Co');
+insert into public.lois_memberships values ('25eaaebe-4b1e-4d87-b53a-b0f459b4db0a','b503092a-fbf0-43b1-90b5-f6f6686d7036','owner');
