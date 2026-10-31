@@ -2,21 +2,23 @@ import Link from 'next/link'
 import { requireWorkspace } from '@/lib/session'
 import { SubmitButton } from '@/components/submit-button'
 import { groupAreas, areaState, missingNeeds, dependants, type Area, type BizArea } from '@/lib/areas'
-import { addBusiness, setArea, setShare } from './actions'
+import { addBusiness, setArea, setShare, setMember } from './actions'
 
 export const metadata = { title: 'Business areas' }
-const DONE: Record<string, string> = { on: 'Area switched on.', off: 'Area switched off.', business: 'Business added with the core areas on.', share: 'Sharing updated and logged.' }
+const DONE: Record<string, string> = { on: 'Area switched on.', off: 'Area switched off.', business: 'Business added with the core areas on.', share: 'Sharing updated and logged.', member: 'Access updated and logged.' }
 const DATASETS = [['contacts', 'Contacts'], ['products', 'Products'], ['stock', 'Stock'], ['ledger', 'Ledger']] as const
 const STATUS: Record<string, string> = { live: 'Live', beta: 'Beta', planned: 'Planned' }
 
 export default async function Areas({ searchParams }: { searchParams: Promise<{ b?: string; error?: string; done?: string }> }) {
   const sp = await searchParams
   const ctx = await requireWorkspace()
-  const [{ data: areasRaw }, { data: bizRaw }, { data: baRaw }, { data: shareRaw }] = await Promise.all([
+  const [{ data: areasRaw }, { data: bizRaw }, { data: baRaw }, { data: shareRaw }, { data: dirRaw }, { data: bmRaw }] = await Promise.all([
     ctx.sb.from('lois_areas').select('*').order('sort'),
     ctx.sb.from('lois_businesses').select('business_id,name,sector,currency').eq('tenant_id', ctx.ws.tenant_id).order('created_at'),
     ctx.sb.from('lois_business_areas').select('business_id,area_code,state,active').eq('tenant_id', ctx.ws.tenant_id),
     ctx.sb.from('lois_business_shares').select('from_business,to_business,dataset').eq('tenant_id', ctx.ws.tenant_id),
+    ctx.isAdmin ? ctx.sb.rpc('lois_members_directory', { p_tenant: ctx.ws.tenant_id }) : Promise.resolve({ data: [] as { user_id: string; email: string; role: string }[] }),
+    ctx.isAdmin ? ctx.sb.from('lois_business_members').select('business_id,user_id').eq('tenant_id', ctx.ws.tenant_id) : Promise.resolve({ data: [] as { business_id: string; user_id: string }[] }),
   ])
   const areas = (areasRaw ?? []) as Area[]; const biz = bizRaw ?? []
   const cur = biz.find((b) => b.business_id === sp.b) ?? biz[0]
@@ -71,6 +73,17 @@ export default async function Areas({ searchParams }: { searchParams: Promise<{ 
             })}</ul>
           </section>))}
 
+        {ctx.isAdmin && cur && (
+          <section className="card" aria-labelledby="mem-h"><h2 id="mem-h" className="mono">Who can work in {cur.name}</h2>
+            <p className="muted small">Owners and admins always see every business. Other people see only the businesses you give them. Contacts, deals, invoices and stock stay hidden from anyone not assigned, unless a business shares that data with one they can see.</p>
+            <ul className="plainlist">{((dirRaw ?? []) as { user_id: string; email: string; role: string }[]).map((m) => {
+              const has = (bmRaw ?? []).some((x) => x.business_id === cur.business_id && x.user_id === m.user_id); const always = ['owner', 'admin'].includes(m.role)
+              return (<li key={m.user_id} style={{ padding: '0.4rem 0' }}><form className="row" style={{ gap: '0.6rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                <input type="hidden" name="business" value={cur.business_id} /><input type="hidden" name="user" value={m.user_id} />
+                <span>{m.email} <span className="chip">{m.role}</span></span>
+                {always ? <span className="muted small">sees everything</span> : <SubmitButton className={`btn small ${has ? 'ghost' : ''}`} formAction={setMember.bind(null, has ? '0' : '1')} pendingText="Saving…">{has ? 'Remove access' : 'Give access'}</SubmitButton>}
+              </form></li>)
+            })}</ul></section>)}
         {ctx.isAdmin && biz.length > 1 && (
           <section className="card" aria-labelledby="sh-h"><h2 id="sh-h" className="mono">Sharing between businesses</h2>
             <p className="muted small">Businesses do not see each other's data unless you share it. Choose what {cur.name} shares with another business of yours (for example the same customer list). Each change is logged.</p>

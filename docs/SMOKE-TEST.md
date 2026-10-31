@@ -50,3 +50,5 @@ Prepared for Dustine Kibagendi, The Lucrebag. Run in a private window after each
 | 44 | Record a part payment | Receipt RCT-YYYY-00001; status Part paid; paying more than owed is refused |
 | 45 | Work > Accounting | Trial balance debits equal credits |
 | 46 | As a plain member (not admin) save and issue an invoice | "Sent for approval"; an owner/admin other than you sees "Approve and issue" |
+| 47 | Business areas > "Who can work in": add a member with no access, open Work as that member | Member sees only businesses given to them; contacts of other businesses are absent |
+| 48 | Share Contacts from business B to A, then open A's Contacts as the member | B's contacts now appear in A only |

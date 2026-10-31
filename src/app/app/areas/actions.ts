@@ -26,3 +26,10 @@ export async function setShare(on: string, fd: FormData) {
   if (error) back(from, 'error=' + encodeURIComponent(clean(error)))
   revalidatePath('/app/areas'); back(from, 'done=share')
 }
+export async function setMember(on: string, fd: FormData) {
+  const ctx = await requireWorkspace()
+  const b = String(fd.get('business') ?? '')
+  const { error } = await ctx.sb.rpc('lois_business_member_set', { p_business: b, p_user: String(fd.get('user') ?? ''), p_on: on === '1' })
+  if (error) back(b, 'error=' + encodeURIComponent(clean(error)))
+  revalidatePath('/app/areas'); back(b, 'done=member')
+}
