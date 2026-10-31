@@ -32,7 +32,13 @@ export async function runResearch(_: ResearchState, fd: FormData): Promise<Resea
     return { q, r, knowledgeHits: hits.map((h) => ({ id: h.id, title: h.title })) }
   } catch (e) {
     const code = e instanceof Error ? e.message : ''
-    return { error: code === '429' ? 'The free Gemini quota is used up for now. Try again later.' : 'Web research failed (' + (code || 'unknown') + '). Try again in a moment.' }
+    const why: Record<string, string> = {
+      '429': 'The free Gemini quota is used up for now. Try again later.',
+      '404': 'LOIS could not find a Gemini model that is still offered. An owner should check the model name setting (LOIS_MODEL_GOOGLE) or clear it.',
+      '400': 'Google rejected the request or the key. An owner should check GOOGLE_API_KEY.',
+      '403': 'Google refused this key. An owner should check GOOGLE_API_KEY and that the Generative Language API is enabled for it.',
+    }
+    return { error: why[code] ?? 'Web research failed (' + (code || 'unknown') + '). Try again in a moment.' }
   }
 }
 
