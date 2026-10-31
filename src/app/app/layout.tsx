@@ -38,6 +38,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         { href: '/app/bank', label: 'Knowledge bank', icon: 'shield' },
         { href: '/app/help', label: 'Get help', icon: 'lifebuoy' },
         { href: '/app/projects', label: 'Projects', icon: 'folder' },
+        { href: '/app/areas', label: 'Business areas', icon: 'grid' },
         { href: '/app/sandbox/hub', label: 'Use case hub', icon: 'flow' },
         { href: '/app/sandbox', label: 'Sandbox', icon: 'flask' },
         ...(ctx.isAdmin ? ([{ href: '/app/connectors', label: 'Connectors', icon: 'plug' }] as NavItem[]) : []),

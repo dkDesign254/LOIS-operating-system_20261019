@@ -40,3 +40,6 @@ Prepared for Dustine Kibagendi, The Lucrebag. Run in a private window after each
 | 34 | Request a live run; try to approve it as the same person | Refused; a different owner/admin must approve with a note of 5+ characters |
 | 35 | After approval, send; Make calls back to `/api/v1/run-callback` with the one-time token | Result stored and labelled "reported" until a person records it |
 | 36 | Staff (MFA) change a workspace's run allowance in /internal | New limits apply from the next run; third live run in a day is refused at the default of 3 |
+| 37 | Business areas: open /app/areas as owner, add a business, switch on Invoicing with "also switch on" ticked | Contacts and CRM and Invoicing show ON; switching CRM off is refused while Invoicing needs it |
+| 38 | Mark a planned area (Payroll) as wanted; as a member view the page | "wanted" shows; the member sees no buttons |
+| 39 | With two businesses, share Contacts from one to the other, then unshare | Button flips shared/private; Insights/admin log records both |
