@@ -43,3 +43,10 @@ Prepared for Dustine Kibagendi, The Lucrebag. Run in a private window after each
 | 37 | Business areas: open /app/areas as owner, add a business, switch on Invoicing with "also switch on" ticked | Contacts and CRM and Invoicing show ON; switching CRM off is refused while Invoicing needs it |
 | 38 | Mark a planned area (Payroll) as wanted; as a member view the page | "wanted" shows; the member sees no buttons |
 | 39 | With two businesses, share Contacts from one to the other, then unshare | Button flips shared/private; Insights/admin log records both |
+| 40 | Business areas: switch on Contacts and CRM, Inventory, Invoicing, Accounting for a business; open Work | Four cards appear; an area that is off redirects to Business areas with a message |
+| 41 | Work > Contacts: add a customer with a credit limit; add a deal; move it to "qualified" | Contact in the table; deal moves column; totals per stage update |
+| 42 | Work > Inventory: add a product (VAT 16%), then "Goods received" 5 | On hand shows 5 |
+| 43 | Work > Invoicing: new invoice, 2 of the product, Save and issue | Number INV-YYYY-00001, total with VAT, stock now 3 |
+| 44 | Record a part payment | Receipt RCT-YYYY-00001; status Part paid; paying more than owed is refused |
+| 45 | Work > Accounting | Trial balance debits equal credits |
+| 46 | As a plain member (not admin) save and issue an invoice | "Sent for approval"; an owner/admin other than you sees "Approve and issue" |
