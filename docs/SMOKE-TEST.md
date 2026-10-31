@@ -34,3 +34,9 @@ Prepared for Dustine Kibagendi, The Lucrebag. Run in a private window after each
 | 28 | Knowledge bank: read the Search index line, press Index now (repeat until none left) | Count of indexed entries rises to all accepted; or an exact error is shown (send it to Claude) |
 | 29 | As owner/admin open Insights; switch 7/30/90 days; as a member try `/app/insights` | Tiles, chart, models, bank breakdown; member gets a 404 |
 | 30 | Web research: ask a current question, open two sources, Propose to the Knowledge bank | Findings with sources; the entry appears in the review queue with the web links |
+| 31 | Sandbox, Use case hub: open Social media management, edit config, press Run test | A run record with what/when/why/how/expect/accuracy; marked simulated; counts against the test allowance (10 per Nairobi day by default) |
+| 32 | Connectors (owner/admin): add a Make webhook connector | Created OFF; the endpoint is not shown back to you |
+| 33 | Switch the connector ON with a reason of 8+ characters | Logged with your name, time and reason; Make API refuses on a free-plan workspace |
+| 34 | Request a live run; try to approve it as the same person | Refused; a different owner/admin must approve with a note of 5+ characters |
+| 35 | After approval, send; Make calls back to `/api/v1/run-callback` with the one-time token | Result stored and labelled "reported" until a person records it |
+| 36 | Staff (MFA) change a workspace's run allowance in /internal | New limits apply from the next run; third live run in a day is refused at the default of 3 |
