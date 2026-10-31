@@ -52,3 +52,6 @@ Prepared for Dustine Kibagendi, The Lucrebag. Run in a private window after each
 | 46 | As a plain member (not admin) save and issue an invoice | "Sent for approval"; an owner/admin other than you sees "Approve and issue" |
 | 47 | Business areas > "Who can work in": add a member with no access, open Work as that member | Member sees only businesses given to them; contacts of other businesses are absent |
 | 48 | Share Contacts from business B to A, then open A's Contacts as the member | B's contacts now appear in A only |
+| 49 | Work > Promissory notes: draft a note for a customer; try to record a signature without a name | Refused; with a name it shows Signed by ... and can then be settled, defaulted or voided |
+| 50 | Work > Invoicing: open Print / PDF on an issued invoice and print to PDF | A clean one-page invoice without the menus, with receipts listed |
+| 51 | Work > Accounting for two businesses with invoices in only one | Only that business shows balances |

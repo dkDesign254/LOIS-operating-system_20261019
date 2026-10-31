@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { requireWorkspace } from '@/lib/session'
 
 export const metadata = { title: 'Work' }
-const PAGES: [string, string, string][] = [['crm', 'Contacts and CRM', 'Contacts and the deals pipeline'], ['invoicing', 'Invoicing', 'Quotes, invoices, payments and receipts'], ['inventory', 'Inventory', 'Products and stock'], ['accounting', 'Accounting and ledger', 'Trial balance']]
+const PAGES: [string, string, string][] = [['crm', 'Contacts and CRM', 'Contacts and the deals pipeline'], ['invoicing', 'Invoicing', 'Quotes, invoices, payments and receipts'], ['inventory', 'Inventory', 'Products and stock'], ['promissory', 'Promissory notes and credit', 'Notes for customers buying on credit'], ['accounting', 'Accounting and ledger', 'Trial balance']]
 
 export default async function Work({ searchParams }: { searchParams: Promise<{ b?: string }> }) {
   const sp = await searchParams; const ctx = await requireWorkspace()

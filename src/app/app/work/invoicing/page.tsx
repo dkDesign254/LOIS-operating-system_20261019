@@ -1,6 +1,7 @@
 import { workArea, money } from '@/lib/erp'
 import { WorkHead } from '@/components/work-head'
 import { SubmitButton } from '@/components/submit-button'
+import Link from 'next/link'
 import { saveDraft, saveAndIssue, issueDoc, payDoc } from '../actions'
 
 export const metadata = { title: 'Invoicing' }
@@ -25,6 +26,7 @@ export default async function Invoicing({ searchParams }: { searchParams: Promis
           <li key={d.doc_id} style={{ padding: '0.7rem 0' }}>
             <b>{d.number ?? 'Not numbered yet'}</b> <span className="chip">{d.kind}</span> <span className={`chip ${d.status === 'paid' ? 'approved' : ''}`}>{LABEL[d.status] ?? d.status}</span> {nm.get(d.contact_id)} · {money(d.total, d.currency)}{d.paid > 0 && <> · paid {money(d.paid, d.currency)}</>}{d.due_date && <> · due {d.due_date}</>}
             <div className="row" style={{ gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.3rem' }}>
+              {d.number && <Link href={`/app/work/print/${d.doc_id}`} className="btn ghost small">Print / PDF</Link>}
               {['draft', 'awaiting_approval'].includes(d.status) && <form>{hidden}<input type="hidden" name="id" value={d.doc_id} /><SubmitButton className="btn small" formAction={issueDoc} pendingText="Working…">{d.status === 'awaiting_approval' ? 'Approve and issue' : 'Issue'}</SubmitButton></form>}
               {d.kind === 'invoice' && ['issued', 'partly_paid'].includes(d.status) && (
                 <form className="row" style={{ gap: '0.4rem', flexWrap: 'wrap' }}>{hidden}<input type="hidden" name="id" value={d.doc_id} />

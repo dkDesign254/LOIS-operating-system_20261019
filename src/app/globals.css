@@ -327,3 +327,11 @@ html { scroll-behavior: smooth; }
 }
 
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media print {
+  .no-print, .side, .rail, .skip-link, nav { display: none !important; }
+  .shell { display: block !important; }
+  .main { margin: 0 !important; padding: 0 !important; max-width: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+  .card { border: 0 !important; box-shadow: none !important; }
+}

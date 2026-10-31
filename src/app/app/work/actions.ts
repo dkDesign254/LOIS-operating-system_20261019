@@ -83,3 +83,18 @@ export async function payDoc(fd: FormData) {
   if (error) fail('invoicing', b, error)
   revalidatePath('/app/work/invoicing'); go('invoicing', b, 'done=paid&receipt=' + encodeURIComponent(String(data)))
 }
+export async function newNote(fd: FormData) {
+  const ctx = await requireWorkspace(); const b = s(fd, 'b'); const principal = toMinor(fd.get('principal'))
+  if (!principal) fail('promissory', b, 'Enter the amount.')
+  const rate = parseFloat(s(fd, 'rate', 6) || '0'); const due = s(fd, 'due', 10)
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(due)) fail('promissory', b, 'Choose the due date.')
+  const { data, error } = await ctx.sb.rpc('erp_note_new', { p_business: b, p_contact: s(fd, 'contact'), p_principal: principal, p_interest_bp: Math.round(Math.min(100, Math.max(0, rate || 0)) * 100), p_due: due, p_terms: s(fd, 'terms', 1000), p_doc: s(fd, 'doc') || null })
+  if (error) fail('promissory', b, error)
+  revalidatePath('/app/work/promissory'); go('promissory', b, 'done=note&receipt=' + encodeURIComponent(String(data)))
+}
+export async function noteStatus(status: string, fd: FormData) {
+  const ctx = await requireWorkspace(); const b = s(fd, 'b')
+  const { error } = await ctx.sb.rpc('erp_note_status', { p_note: s(fd, 'id'), p_status: status, p_signer: s(fd, 'signer', 120) })
+  if (error) fail('promissory', b, error)
+  revalidatePath('/app/work/promissory'); go('promissory', b, 'done=note_' + status)
+}
